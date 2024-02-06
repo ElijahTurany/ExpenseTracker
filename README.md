@@ -1,3 +1,3 @@
 # ExpenseTracker
 02/06/2023
-Hello
+https://www.freecodecamp.org/news/connect-python-with-sql/
