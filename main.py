@@ -3,6 +3,20 @@ from mysql.connector import Error
 import pandas as pd
 
 #Stolen
+def create_server_connection(host_name, user_name, user_password):
+    connection = None
+    try:
+        connection = mysql.connector.connect(
+            host=host_name,
+            user=user_name,
+            passwd=user_password
+        )
+        print("MySQL Database connection successful")
+    except Error as err:
+        print(f"Error: '{err}'")
+
+    return connection
+
 def create_db_connection(host_name, user_name, user_password, db_name):
     connection = None
     try:
@@ -17,6 +31,7 @@ def create_db_connection(host_name, user_name, user_password, db_name):
         print(f"Error: '{err}'")
 
     return connection
+
 #Also Stolen
 def execute_query(connection, query):
     cursor = connection.cursor()
@@ -26,10 +41,64 @@ def execute_query(connection, query):
         print("Query successful")
     except Error as err:
         print(f"Error: '{err}'")
-#query = "CREATE DATABASE ExpenseTracker"
-#create_database(connection, query)
 
-connection = create_db_connection("localhost", "root", "MyDB2024")
+
+#NOT stolen
+def addTransaction():
+    pass
+def addAccount():
+    pass
+def addUser():
+    pass
+def addCategory():
+    pass
+
+# connection = create_server_connection("localhost", "root", "password")
+# query = "CREATE DATABASE ExpenseTracker"
+# execute_query(connection, query)
+
+connection = create_db_connection("localhost", "root", "password", "expensetracker")
+
+createAccountTable = """
+CREATE TABLE Account (
+    col0 VARCHAR(20),
+    col1 VARCHAR(20),
+    col2 VARCHAR(20),
+    col3 VARCHAR(20)
+);
+"""
+
+createTransactionTable = """
+CREATE TABLE Transaction (
+    col0 VARCHAR(20),
+    col1 VARCHAR(20),
+    col2 VARCHAR(20),
+    col3 VARCHAR(20),
+    col4 VARCHAR(20),
+    col5 VARCHAR(20),
+    col6 VARCHAR(20)
+);
+"""
+
+createCategoryTable = """
+CREATE TABLE Category (
+    col0 VARCHAR(20),
+    col1 VARCHAR(20)
+);
+"""
+
+createUserTable = """
+CREATE TABLE User (
+    col0 VARCHAR(20),
+    col1 VARCHAR(20),
+    col2 VARCHAR(20)
+);
+"""
+
+execute_query(connection, createAccountTable)
+execute_query(connection, createTransactionTable)
+execute_query(connection, createCategoryTable)
+execute_query(connection, createUserTable)
 
 # amount = input('Enter an amount: ')
 # account = input('Enter an account: ')
