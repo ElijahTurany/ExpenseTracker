@@ -53,6 +53,27 @@ def addUser():
 def addCategory():
     pass
 
+
+def clearTables():
+    connection = create_server_connection("localhost", "root", "password")
+    clearTables = """
+        TRUNCATE TABLE Account;
+        TRUNCATE TABLE Transaction;
+        TRUNCATE TABLE Category;
+        TRUNCATE TABLE User;
+    """
+    execute_query(connection, clearTables)
+
+def deleteTables():
+    connection = create_server_connection("localhost", "root", "password")
+    clearTables = """
+        DROP TABLE Account;
+        DROP TABLE Transaction;
+        DROP TABLE Category;
+        DROP TABLE User;
+    """
+    execute_query(connection, clearTables)
+
 # connection = create_server_connection("localhost", "root", "password")
 # query = "CREATE DATABASE ExpenseTracker"
 # execute_query(connection, query)
@@ -95,10 +116,11 @@ CREATE TABLE User (
 );
 """
 
-execute_query(connection, createAccountTable)
-execute_query(connection, createTransactionTable)
-execute_query(connection, createCategoryTable)
-execute_query(connection, createUserTable)
+deleteTables()
+# execute_query(connection, createAccountTable)
+# execute_query(connection, createTransactionTable)
+# execute_query(connection, createCategoryTable)
+# execute_query(connection, createUserTable)
 
 # amount = input('Enter an amount: ')
 # account = input('Enter an account: ')
