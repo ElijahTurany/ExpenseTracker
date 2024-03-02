@@ -55,7 +55,7 @@ def addCategory():
 
 
 def clearTables():
-    connection = create_server_connection("localhost", "root", "password")
+    connection = create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
     clearTables = """
         TRUNCATE TABLE Account;
         TRUNCATE TABLE Transaction;
@@ -65,7 +65,7 @@ def clearTables():
     execute_query(connection, clearTables)
 
 def deleteTables():
-    connection = create_server_connection("localhost", "root", "password")
+    connection = create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
     clearTables = """
         DROP TABLE Account;
         DROP TABLE Transaction;
@@ -78,49 +78,49 @@ def deleteTables():
 # query = "CREATE DATABASE ExpenseTracker"
 # execute_query(connection, query)
 
-connection = create_db_connection("localhost", "root", "password", "expensetracker")
+connection = create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
 
 createAccountTable = """
 CREATE TABLE Account (
-    col0 VARCHAR(20),
-    col1 VARCHAR(20),
-    col2 VARCHAR(20),
-    col3 VARCHAR(20)
+    AccountId int(10) NOT NULL PRIMARY KEY ,
+    title VARCHAR(20) NOT NULL,
+    balance int(15) NOT NULL,
+    UserId int(10) NOT NULL
 );
 """
 
 createTransactionTable = """
 CREATE TABLE Transaction (
-    col0 VARCHAR(20),
-    col1 VARCHAR(20),
-    col2 VARCHAR(20),
-    col3 VARCHAR(20),
-    col4 VARCHAR(20),
-    col5 VARCHAR(20),
-    col6 VARCHAR(20)
+    transactionNum int(10) NOT NULL PRIMARY KEY ,
+    amount int(10),
+    description VARCHAR(250),
+    accountId int(10),
+    categoryId int(10),
+    timestamp VARCHAR(30),
+    note VARCHAR(100)
 );
 """
 
 createCategoryTable = """
 CREATE TABLE Category (
-    col0 VARCHAR(20),
-    col1 VARCHAR(20)
+    categoryId int(10) NOT NULL PRIMARY KEY ,
+    name VARCHAR(25)
 );
 """
 
 createUserTable = """
 CREATE TABLE User (
-    col0 VARCHAR(20),
-    col1 VARCHAR(20),
-    col2 VARCHAR(20)
+    userId int(10) NOT NULL PRIMARY KEY ,
+    numberOfAccounts int(8),
+    levelOfAccess int(2)
 );
 """
 
-deleteTables()
-# execute_query(connection, createAccountTable)
-# execute_query(connection, createTransactionTable)
-# execute_query(connection, createCategoryTable)
-# execute_query(connection, createUserTable)
+#deleteTables()
+#execute_query(connection, createAccountTable)
+#execute_query(connection, createTransactionTable)
+#execute_query(connection, createCategoryTable)
+#execute_query(connection, createUserTable)
 
 # amount = input('Enter an amount: ')
 # account = input('Enter an account: ')
