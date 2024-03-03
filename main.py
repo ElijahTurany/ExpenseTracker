@@ -42,6 +42,16 @@ def execute_query(connection, query):
     except Error as err:
         print(f"Error: '{err}'")
 
+def read_query(connection, query):
+    cursor = connection.cursor()
+    result = None
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+        return result
+    except Error as err:
+        print(f"Error: '{err}'")
+
 #NOT stolen
 def createDatabase(name):
     connection = create_server_connection("localhost", "root", "MyDB2024")
@@ -122,6 +132,53 @@ def addUser(connection, userId, numAccounts, levelOfAccess):
     query = "INSERT INTO user VALUES(" + str(userId) + ",  " + str(numAccounts) + ",  " + str(levelOfAccess) +")"
     execute_query(connection, query)
 
+def renameAccount(connection):
+    pass
+def editTransaction(connection):
+    pass
+def renameCategory(connection):
+    pass
+
+def viewAccounts(connection):
+    query = "SELECT * FROM account"
+    return read_query(connection, query)
+
+def viewTransactions(connection, timeframeStart, timeframeEnd, accountId, categoryId):
+    if (accountId is None) and (timeframeStart is None) and (timeframeEnd is None) and (categoryId is None):
+        query = "SELECT * FROM transaction"
+        return read_query(connection, query) 
+    else:
+        query = "SELECT * FROM transaction WHERE "
+
+        if (timeframeStart is not None) and (timeframeEnd is not None):
+            query += "timestamp BETWEEN " + str(timeframeStart) + " AND " + str(timeframeEnd)
+        elif (timeframeStart is not None):
+            query += "timestamp >= " + str(timeframeStart)
+        elif (timeframeEnd is not None):
+            query += "timestamp <= " + str(timeframeEnd)
+
+        if (accountId is not None):
+            if (timeframeStart is not None) or (timeframeEnd is not None):
+                query += " AND "
+            query += "accountId=" + str(accountId) 
+        
+        if (categoryId is not None):
+            if(accountId is not None):
+                query += " AND "
+            elif (timeframeStart is not None) or (timeframeEnd is not None):
+                query += " AND "
+            query += "categoryId='" + str(categoryId) + "'"
+        return read_query(connection, query) 
+
+def viewCategories(connection):
+    query = "SELECT * FROM category"
+    return read_query(connection, query)
+
+def timeSummary():
+    pass
+def categorySummary():
+    pass
+
 # amount = input('Enter an amount: ')
 # account = input('Enter an account: ')
 # description = input('Enter an description: ')
@@ -136,3 +193,15 @@ addUser(connection, 0, 0, 1)
 addAccount(connection, 0, "Wallet", 9, 0)
 addCategory(connection, 0, "Snacks")
 addTransaction(connection, 0, 2, "Candy bar", 0, 0, 100, "")
+
+accounts = viewAccounts(connection)
+for account in accounts:
+    print(account)
+
+categories = viewCategories(connection)
+for category in categories:
+    print(category)
+
+transactions = viewTransactions(connection, 50, 150, 0, 0)
+for transaction in transactions:
+    print(transaction)
