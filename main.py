@@ -43,9 +43,9 @@ def execute_query(connection, query):
         print(f"Error: '{err}'")
 
 #NOT stolen
-def createDatabase():
+def createDatabase(name):
     connection = create_server_connection("localhost", "root", "MyDB2024")
-    query = "CREATE DATABASE ExpenseTracker"
+    query = "CREATE DATABASE " + name
     execute_query(connection, query)     
 
 def buildTables(connection):
@@ -129,7 +129,7 @@ def addUser(connection, userId, numAccounts, levelOfAccess):
 # timestamp = input('Enter an timestamp (Optional): ')
 # notes = input('Enter any notes (Optional): ')
 
-createDatabase()
+createDatabase("expensetracker")
 connection = create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
 buildTables(connection)
 addUser(connection, 0, 0, 1)
