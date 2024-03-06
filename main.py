@@ -97,6 +97,7 @@ def buildTables(connection):
     execute_query(connection, createCategoryTable)
     execute_query(connection, createUserTable)
 
+#Command out of sync error
 def clearTables(connection):
     clearTables = """
         TRUNCATE TABLE Account;
@@ -115,6 +116,7 @@ def deleteTables(connection):
     """
     execute_query(connection, clearTables)
 
+#Typechecking in the GUI
 def addAccount(connection, accountId, title, balance, userId):
     query = "INSERT INTO account VALUES(" + str(accountId) + ",  '" + title + "', " + str(balance) + ", " + str(userId) + ")"
     execute_query(connection, query)
@@ -131,57 +133,80 @@ def addUser(connection, userId, numAccounts, levelOfAccess):
     query = "INSERT INTO user VALUES(" + str(userId) + ",  " + str(numAccounts) + ",  " + str(levelOfAccess) +")"
     execute_query(connection, query)
 
+def viewAccounts(connection):
+    query = "SELECT * FROM account"
+    return read_query(connection, query)
+
+def viewTransactions(connection, timeframeStart, timeframeEnd, accountId, categoryId):
+    #"WHERE 1=1" is added so adding filters is as simple as adding " AND condition"
+    query = "SELECT * FROM transaction WHERE 1=1"
+
+    if (timeframeStart is not None) and (timeframeEnd is not None):
+        query += " AND timestamp BETWEEN " + str(timeframeStart) + " AND " + str(timeframeEnd)
+    elif (timeframeStart is not None):
+        query += " AND timestamp >= " + str(timeframeStart)
+    elif (timeframeEnd is not None):
+        query += " AND timestamp <= " + str(timeframeEnd)
+
+    if (accountId is not None):
+        query += " AND accountId=" + str(accountId) 
+        
+    if (categoryId is not None):
+        query += " AND categoryId='" + str(categoryId) + "'"
+
+    return read_query(connection, query) 
+
+def advancedViewTransactions(connection, amountLow, amountHigh, description, accountIds, categoryIds, timeframeStart, timeframeEnd, orderBy, ascDesc):
+    #"WHERE 1=1" is added so adding filters is as simple as adding " AND condition"
+    query = "SELECT * FROM transaction WHERE 1=1"
+
+    if (amountLow is not None) and (amountHigh is not None):
+        query += " AND amount BETWEEN " + str(amountLow) + " AND " + str(amountHigh)
+    elif (amountLow is not None):
+        query += " AND amount >= " + str(amountLow)
+    elif (amountHigh is not None):
+        query += " AND amount <= " + str(amountHigh)
+
+    if (description is not None):
+        query += " AND description = '" + str(description) + "'"
+
+    if (accountIds is not None):
+        query += " AND ("
+        for i in accountIds:
+            query += "accountId = " + str(i) + " OR "
+        query += "0=1)"
+
+    if (categoryIds is not None):
+        query += " AND ("
+        for i in categoryIds:
+            query += "categoryId = " + str(i) + " OR "
+        query += "0=1)"
+
+    if (timeframeStart is not None) and (timeframeEnd is not None):
+        query += " AND timestamp BETWEEN " + str(timeframeStart) + " AND " + str(timeframeEnd)
+    elif (timeframeStart is not None):
+        query += " AND timestamp >= " + str(timeframeStart)
+    elif (timeframeEnd is not None):
+        query += " AND timestamp <= " + str(timeframeEnd)
+
+    if (orderBy is not None):
+        query += " ORDER BY " + str(orderBy)
+
+    if (ascDesc is not None):
+        query += " " + str(ascDesc)
+
+    return read_query(connection, query)
+
+def viewCategories(connection):
+    query = "SELECT * FROM category"
+    return read_query(connection, query)
+
 def renameAccount(connection, accountId, accountName):
     pass
 def editTransaction(connection, transactionId, amount, description, accountId, categoryId, timestamp, note):
     pass
 def renameCategory(connection, categoryId, categoryName):
     pass
-
-def viewAccounts(connection):
-    query = "SELECT * FROM account"
-    return read_query(connection, query)
-
-def viewTransactions(connection, timeframeStart, timeframeEnd, accountId, categoryId):
-    if (accountId is None) and (timeframeStart is None) and (timeframeEnd is None) and (categoryId is None):
-        query = "SELECT * FROM transaction"
-        return read_query(connection, query) 
-    else:
-        query = "SELECT * FROM transaction WHERE 1=1"
-
-        if (timeframeStart is not None) and (timeframeEnd is not None):
-            query += " AND timestamp BETWEEN " + str(timeframeStart) + " AND " + str(timeframeEnd)
-        elif (timeframeStart is not None):
-            query += " AND timestamp >= " + str(timeframeStart)
-        elif (timeframeEnd is not None):
-            query += " AND timestamp <= " + str(timeframeEnd)
-
-        if (accountId is not None):
-            query += " AND accountId=" + str(accountId) 
-        
-        if (categoryId is not None):
-            query += " AND categoryId='" + str(categoryId) + "'"
-
-        return read_query(connection, query) 
-
-def advancedViewTransactions(connection, amountLow, amountHigh, description, accountIds, categoryIds, timeframeStart, timeframeEnd, orderBy, ascDesc):
-    query = "SELECT * FROM transaction WHERE 1=1"
-
-    if (amountLow is not None) and (amountHigh is not None):
-        query += " AND amount BETWEEN " + str(timeframeStart) + " AND " + str(timeframeEnd)
-    elif (amountLow is not None):
-        query += " AND amount >= " + str(timeframeStart)
-    elif (amountHigh is not None):
-        query += " AND amount <= " + str(timeframeEnd)
-
-    if (description is not None):
-        query += " AND description = " + str(description)
-
-
-
-def viewCategories(connection):
-    query = "SELECT * FROM category"
-    return read_query(connection, query)
 
 def deleteAccount(connection, accountId):
     pass
@@ -195,20 +220,18 @@ def timeSummary():
 def categorySummary():
     pass
 
-# amount = input('Enter an amount: ')
-# account = input('Enter an account: ')
-# description = input('Enter an description: ')
-# category = input('Enter an category: ')
-# timestamp = input('Enter an timestamp (Optional): ')
-# notes = input('Enter any notes (Optional): ')
-
-createDatabase("expensetracker")
+# createDatabase("expensetracker")
 connection = create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
 buildTables(connection)
 addUser(connection, 0, 0, 1)
 addAccount(connection, 0, "Wallet", 9, 0)
 addCategory(connection, 0, "Snacks")
 addTransaction(connection, 0, 2, "Candy bar", 0, 0, 100, "")
+addTransaction(connection, 1, 119, "Groceries", 1, 1, 110, "Walmart")
+addTransaction(connection, 2, 6, "Paper Towels", 1, 5, 110, "Walmart")
+addTransaction(connection, 3, 2, "Sewing kit", 0, 4, 120, "")
+addTransaction(connection, 4, 42, "Gas", 3, 2, 130, "Kwik Trip")
+addTransaction(connection, 5, 24, "Acoustic Cafe", 0, 3, 140, "")
 
 accounts = viewAccounts(connection)
 for account in accounts:
@@ -219,5 +242,11 @@ for category in categories:
     print(category)
 
 transactions = viewTransactions(connection, 50, 150, 0, 0)
+for transaction in transactions:
+    print(transaction)
+
+accountIds = [0, 1, 2]
+categoryIds = [0, 1, 2, 3, 4]
+transactions = advancedViewTransactions(connection, None, None, None, accountIds, categoryIds, None, None, "amount", "DESC")
 for transaction in transactions:
     print(transaction)
