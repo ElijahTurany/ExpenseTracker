@@ -115,7 +115,6 @@ def deleteTables(connection):
     """
     execute_query(connection, clearTables)
 
-#Need to add typechecking
 def addAccount(connection, accountId, title, balance, userId):
     query = "INSERT INTO account VALUES(" + str(accountId) + ",  '" + title + "', " + str(balance) + ", " + str(userId) + ")"
     execute_query(connection, query)
@@ -132,11 +131,11 @@ def addUser(connection, userId, numAccounts, levelOfAccess):
     query = "INSERT INTO user VALUES(" + str(userId) + ",  " + str(numAccounts) + ",  " + str(levelOfAccess) +")"
     execute_query(connection, query)
 
-def renameAccount(connection):
+def renameAccount(connection, accountId, accountName):
     pass
-def editTransaction(connection):
+def editTransaction(connection, transactionId, amount, description, accountId, categoryId, timestamp, note):
     pass
-def renameCategory(connection):
+def renameCategory(connection, categoryId, categoryName):
     pass
 
 def viewAccounts(connection):
@@ -148,31 +147,48 @@ def viewTransactions(connection, timeframeStart, timeframeEnd, accountId, catego
         query = "SELECT * FROM transaction"
         return read_query(connection, query) 
     else:
-        query = "SELECT * FROM transaction WHERE "
+        query = "SELECT * FROM transaction WHERE 1=1"
 
         if (timeframeStart is not None) and (timeframeEnd is not None):
-            query += "timestamp BETWEEN " + str(timeframeStart) + " AND " + str(timeframeEnd)
+            query += " AND timestamp BETWEEN " + str(timeframeStart) + " AND " + str(timeframeEnd)
         elif (timeframeStart is not None):
-            query += "timestamp >= " + str(timeframeStart)
+            query += " AND timestamp >= " + str(timeframeStart)
         elif (timeframeEnd is not None):
-            query += "timestamp <= " + str(timeframeEnd)
+            query += " AND timestamp <= " + str(timeframeEnd)
 
         if (accountId is not None):
-            if (timeframeStart is not None) or (timeframeEnd is not None):
-                query += " AND "
-            query += "accountId=" + str(accountId) 
+            query += " AND accountId=" + str(accountId) 
         
         if (categoryId is not None):
-            if(accountId is not None):
-                query += " AND "
-            elif (timeframeStart is not None) or (timeframeEnd is not None):
-                query += " AND "
-            query += "categoryId='" + str(categoryId) + "'"
+            query += " AND categoryId='" + str(categoryId) + "'"
+
         return read_query(connection, query) 
+
+def advancedViewTransactions(connection, amountLow, amountHigh, description, accountIds, categoryIds, timeframeStart, timeframeEnd, orderBy, ascDesc):
+    query = "SELECT * FROM transaction WHERE 1=1"
+
+    if (amountLow is not None) and (amountHigh is not None):
+        query += " AND amount BETWEEN " + str(timeframeStart) + " AND " + str(timeframeEnd)
+    elif (amountLow is not None):
+        query += " AND amount >= " + str(timeframeStart)
+    elif (amountHigh is not None):
+        query += " AND amount <= " + str(timeframeEnd)
+
+    if (description is not None):
+        query += " AND description = " + str(description)
+
+
 
 def viewCategories(connection):
     query = "SELECT * FROM category"
     return read_query(connection, query)
+
+def deleteAccount(connection, accountId):
+    pass
+def deleteTransaction(connection, transactionId):
+    pass
+def deleteCategory(connection, categoryId):
+    pass
 
 def timeSummary():
     pass
