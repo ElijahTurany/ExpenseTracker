@@ -201,19 +201,27 @@ def viewCategories(connection):
     query = "SELECT * FROM category"
     return read_query(connection, query)
 
-def renameAccount(connection, accountId, accountName):
-    pass
-def editTransaction(connection, transactionId, amount, description, accountId, categoryId, timestamp, note):
-    pass
-def renameCategory(connection, categoryId, categoryName):
-    pass
+def renameAccount(connection, AccountId_, newAccountName):
+    query = "UPDATE Account SET accountName = newAccountName WHERE AccountId = AccountId_"
+    return read_query(connection, query)
+def editTransaction(connection, transactionNum_, newAmount, newDescription, accountId_, categoryId_, newTimestamp, newNote):
+    query = "UPDATE Transaction SET amount = newAmount, description = newDescription, timestamp = newTimestamp, note = newNote WHERE transactionNum = transactionNum_"
+    return read_query(connection, query)
+def renameCategory(connection, categoryId_, newCategoryName):
+    query = "UPDATE Category SET categoryName = newCategoryName WHERE categoryId = categoryId_"
+    return read_query(connection, query)
 
-def deleteAccount(connection, accountId):
-    pass
-def deleteTransaction(connection, transactionId):
-    pass
-def deleteCategory(connection, categoryId):
-    pass
+# used mostly for testing purposes
+# different methods later to clear data from the GUI but not from actual database
+def deleteAccount(connection, AccountId_):
+    query = "DELETE from Account WHERE AccountId = AccountId_"
+    return read_query(connection, query)
+def deleteTransaction(connection, transactionNum_):
+    query = "DELETE from Transaction WHERE transactionNum = transactionNum_"
+    return read_query(connection, query)
+def deleteCategory(connection, categoryId_):
+    query = "DELETE from Category WHERE categoryId = categoryId_"
+    return read_query(connection, query)
 
 def timeSummary():
     pass
