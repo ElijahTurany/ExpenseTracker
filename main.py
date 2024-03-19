@@ -58,44 +58,53 @@ def createDatabase(name):
     query = "CREATE DATABASE " + name
     execute_query(connection, query)     
 
+#Creates the tables with the necessary information, NEED TO ADD TRANSFER TABLE!!!!!!!!!!#
+#####################################################################################
 def buildTables(connection):
     createAccountTable = """
     CREATE TABLE Account (
-        AccountId int(10) NOT NULL PRIMARY KEY ,
+        AccountId int(10) NOT NULL,
         title VARCHAR(20) NOT NULL,
         balance int(15) NOT NULL,
-        UserId int(10) NOT NULL
+        UserId int(10) NOT NULL,
+        Primary Key (AccountId)
+        Foreign Key (UserId) references User(userId)
     );
     """
     createTransactionTable = """
     CREATE TABLE Transaction (
-        transactionNum int(10) NOT NULL PRIMARY KEY ,
+        transactionNum int(10) NOT NULL,
         amount int(10),
         description VARCHAR(250),
         accountId int(10),
         categoryId int(10),
         timestamp VARCHAR(30),
-        note VARCHAR(100)
+        note VARCHAR(100),
+        Primary Key (transactionNum)
+        Foreign Key (accountId) references Account(AccountId)
+        Foreign Key (categoryId) references Category(categoryId)
     );
     """
     createCategoryTable = """
     CREATE TABLE Category (
-        categoryId int(10) NOT NULL PRIMARY KEY ,
-        name VARCHAR(25)
+        categoryId int(10) NOT NULL,
+        name VARCHAR(25),
+        Primary Key (categoryId)
     );
     """
     createUserTable = """
     CREATE TABLE User (
-        userId int(10) NOT NULL PRIMARY KEY ,
+        userId int(10) NOT NULL,
         numberOfAccounts int(8),
-        levelOfAccess int(2)
+        levelOfAccess int(2) NOT NULL,
+        Primary Key (userId)
     );
     """
 
-    execute_query(connection, createAccountTable)
-    execute_query(connection, createTransactionTable)
-    execute_query(connection, createCategoryTable)
-    execute_query(connection, createUserTable)
+    #execute_query(connection, createAccountTable)
+    #execute_query(connection, createTransactionTable)
+    #execute_query(connection, createCategoryTable)
+    #execute_query(connection, createUserTable)
 
 #Command out of sync error
 def clearTables(connection):
@@ -230,7 +239,8 @@ def categorySummary():
 
 # createDatabase("expensetracker")
 connection = create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
-buildTables(connection)
+#buildTables(connection)
+clearTables(connection)
 addUser(connection, 0, 0, 1)
 addAccount(connection, 0, "Wallet", 9, 0)
 addCategory(connection, 0, "Snacks")
