@@ -1,6 +1,11 @@
 import mysql.connector
 from mysql.connector import Error
 import pandas as pd
+import kivy
+from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
+from kivy.uix.textinput import TextInput
 
 #Stolen
 def create_server_connection(host_name, user_name, user_password):
@@ -240,42 +245,64 @@ def timeSummary():
 def categorySummary():
     pass
 
+def populateTables(connection):
+    addUser(connection, 0, 0, 1)
+    addAccount(connection, 0, "Wallet", 0)
+    addAccount(connection, 1, "DebitCard", 0)
+    addAccount(connection, 2, "CreditCard", 0)
+    addCategory(connection, 0, "Snacks")
+    addCategory(connection, 1, "Food")
+    addCategory(connection, 2, "Gas")
+    addCategory(connection, 3, "Restaurant")
+    addCategory(connection, 4, "Cats")
+    addCategory(connection, 5, "Home")
+    addTransaction(connection, 0, 2, "Candy bar", 0, 0, 100, "")
+    addTransaction(connection, 1, 119, "Groceries", 1, 1, 110, "Walmart")
+    addTransaction(connection, 2, 6, "Paper Towels", 1, 5, 110, "Walmart")
+    addTransaction(connection, 3, 26, "Cat Litter", 0, 4, 120, "")
+    addTransaction(connection, 4, 42, "Gas", 2, 2, 130, "Kwik Trip")
+    addTransaction(connection, 5, 24, "Acoustic Cafe", 0, 3, 140, "")
+
+def printTables(connection):
+    accounts = viewAccounts(connection)
+    for account in accounts:
+        print(account)
+
+    categories = viewCategories(connection)
+    for category in categories:
+        print(category)
+
+    transactions = viewTransactions(connection, None, None, None, None)
+    for transaction in transactions:
+        print(transaction)
+
+    accountIds = [0, 1]
+    categoryIds = [0, 1, 2, 3, 4]
+    transactions = advancedViewTransactions(connection, None, None, None, accountIds, categoryIds, None, None, "amount", "DESC", None)
+    for transaction in transactions:
+        print(transaction)
+
 # createDatabase("expensetracker")
 connection = create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
 #deleteTables(connection)
 #buildTables(connection)
 #clearTables(connection)
-addUser(connection, 0, 0, 1)
-addAccount(connection, 0, "Wallet", 0)
-addAccount(connection, 1, "DebitCard", 0)
-addAccount(connection, 2, "CreditCard", 0)
-addCategory(connection, 0, "Snacks")
-addCategory(connection, 1, "Food")
-addCategory(connection, 2, "Gas")
-addCategory(connection, 3, "Restaurant")
-addCategory(connection, 4, "Cats")
-addCategory(connection, 5, "Home")
-addTransaction(connection, 0, 2, "Candy bar", 0, 0, 100, "")
-addTransaction(connection, 1, 119, "Groceries", 1, 1, 110, "Walmart")
-addTransaction(connection, 2, 6, "Paper Towels", 1, 5, 110, "Walmart")
-addTransaction(connection, 3, 26, "Cat Litter", 0, 4, 120, "")
-addTransaction(connection, 4, 42, "Gas", 2, 2, 130, "Kwik Trip")
-addTransaction(connection, 5, 24, "Acoustic Cafe", 0, 3, 140, "")
+#populateTables(connection)
+#printTables(connection)
 
-accounts = viewAccounts(connection)
-for account in accounts:
-    print(account)
+class CreateTransaction(GridLayout):
+    def __init__(self, **kwargs):
+        super(CreateTransaction, self).__init__(**kwargs)
+        self.cols = 2
+        self.add_widget(Label(text='User Name'))
+        self.username = TextInput(multiline=False)
+        self.add_widget(self.username)
+        self.add_widget(Label(text='password'))
+        self.password = TextInput(password=True, multiline=False)
+        self.add_widget(self.password)
 
-categories = viewCategories(connection)
-for category in categories:
-    print(category)
+class GUI(App):
+    def build(self):
+        return CreateTransaction()
 
-transactions = viewTransactions(connection, None, None, None, None)
-for transaction in transactions:
-    print(transaction)
-
-accountIds = [0, 1]
-categoryIds = [0, 1, 2, 3, 4]
-transactions = advancedViewTransactions(connection, None, None, None, accountIds, categoryIds, None, None, "amount", "DESC", None)
-for transaction in transactions:
-    print(transaction)
+GUI().run()
