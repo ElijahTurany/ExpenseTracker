@@ -59,36 +59,45 @@ def createDatabase(name):
     execute_query(connection, query)     
 
 #Auto incrementing PKs
+#Creates the tables with the necessary information, NEED TO ADD TRANSFER TABLE!!!!!!!!!!#
+#####################################################################################
 def buildTables(connection):
     createAccountTable = """
     CREATE TABLE Account (
-        AccountId int(10) NOT NULL PRIMARY KEY ,
+        AccountId int(10) NOT NULL,
         title VARCHAR(20) NOT NULL,
-        UserId int(10) NOT NULL
+        UserId int(10) NOT NULL,
+        Primary Key (AccountId),
+        Foreign Key (UserId) references User(userId)
     );
     """
     createTransactionTable = """
     CREATE TABLE Transaction (
-        transactionNum int(10) NOT NULL PRIMARY KEY ,
+        transactionNum int(10) NOT NULL,
         amount int(10),
         description VARCHAR(250),
         accountId int(10),
         categoryId int(10),
         timestamp VARCHAR(30),
-        note VARCHAR(100)
+        note VARCHAR(100),
+        Primary Key (transactionNum),
+        Foreign Key (accountId) references Account(AccountId),
+        Foreign Key (categoryId) references Category(categoryId)
     );
     """
     createCategoryTable = """
     CREATE TABLE Category (
-        categoryId int(10) NOT NULL PRIMARY KEY ,
-        name VARCHAR(25)
+        categoryId int(10) NOT NULL,
+        name VARCHAR(25),
+        Primary Key (categoryId)
     );
     """
     createUserTable = """
     CREATE TABLE User (
-        userId int(10) NOT NULL PRIMARY KEY ,
+        userId int(10) NOT NULL,
         numberOfAccounts int(8),
-        levelOfAccess int(2)
+        levelOfAccess int(2) NOT NULL,
+        Primary Key (userId)
     );
     """
 
@@ -118,7 +127,7 @@ def deleteTables(connection):
 
 #Typechecking in the GUI
 #Add starting balance transaction
-def addAccount(connection, accountId, title, startingBalance, userId):
+def addAccount(connection, accountId, title, userId):
     query = "INSERT INTO account VALUES(" + str(accountId) + ",  '" + title + "', " + str(userId) + ")"
     execute_query(connection, query)
     
@@ -204,19 +213,27 @@ def viewCategories(connection):
     query = "SELECT * FROM category"
     return read_query(connection, query)
 
-def renameAccount(connection, accountId, accountName):
-    pass
-def editTransaction(connection, transactionId, amount, description, accountId, categoryId, timestamp, note):
-    pass
-def renameCategory(connection, categoryId, categoryName):
-    pass
+def renameAccount(connection, AccountId_, newAccountName):
+    query = "UPDATE Account SET accountName = newAccountName WHERE AccountId = AccountId_"
+    return read_query(connection, query)
+def editTransaction(connection, transactionNum_, newAmount, newDescription, accountId_, categoryId_, newTimestamp, newNote):
+    query = "UPDATE Transaction SET amount = newAmount, description = newDescription, timestamp = newTimestamp, note = newNote WHERE transactionNum = transactionNum_"
+    return read_query(connection, query)
+def renameCategory(connection, categoryId_, newCategoryName):
+    query = "UPDATE Category SET categoryName = newCategoryName WHERE categoryId = categoryId_"
+    return read_query(connection, query)
 
-def deleteAccount(connection, accountId):
-    pass
-def deleteTransaction(connection, transactionId):
-    pass
-def deleteCategory(connection, categoryId):
-    pass
+# used mostly for testing purposes
+# different methods later to clear data from the GUI but not from actual database
+def deleteAccount(connection, AccountId_):
+    query = "DELETE from Account WHERE AccountId = AccountId_"
+    return read_query(connection, query)
+def deleteTransaction(connection, transactionNum_):
+    query = "DELETE from Transaction WHERE transactionNum = transactionNum_"
+    return read_query(connection, query)
+def deleteCategory(connection, categoryId_):
+    query = "DELETE from Category WHERE categoryId = categoryId_"
+    return read_query(connection, query)
 
 def timeSummary():
     pass
@@ -225,30 +242,39 @@ def categorySummary():
 
 # createDatabase("expensetracker")
 connection = create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
-# buildTables(connection)
-# addUser(connection, 0, 0, 1)
-# addAccount(connection, 0, "Wallet", 9, 0)
-# addCategory(connection, 0, "Snacks")
-# addTransaction(connection, 0, 2, "Candy bar", 0, 0, 100, "")
-# addTransaction(connection, 1, 119, "Groceries", 1, 1, 110, "Walmart")
-# addTransaction(connection, 2, 6, "Paper Towels", 1, 5, 110, "Walmart")
-# addTransaction(connection, 3, 2, "Sewing kit", 0, 4, 120, "")
-# addTransaction(connection, 4, 42, "Gas", 3, 2, 130, "Kwik Trip")
-# addTransaction(connection, 5, 24, "Acoustic Cafe", 0, 3, 140, "")
+#deleteTables(connection)
+#buildTables(connection)
+#clearTables(connection)
+addUser(connection, 0, 0, 1)
+addAccount(connection, 0, "Wallet", 0)
+addAccount(connection, 1, "DebitCard", 0)
+addAccount(connection, 2, "CreditCard", 0)
+addCategory(connection, 0, "Snacks")
+addCategory(connection, 1, "Food")
+addCategory(connection, 2, "Gas")
+addCategory(connection, 3, "Restaurant")
+addCategory(connection, 4, "Cats")
+addCategory(connection, 5, "Home")
+addTransaction(connection, 0, 2, "Candy bar", 0, 0, 100, "")
+addTransaction(connection, 1, 119, "Groceries", 1, 1, 110, "Walmart")
+addTransaction(connection, 2, 6, "Paper Towels", 1, 5, 110, "Walmart")
+addTransaction(connection, 3, 26, "Cat Litter", 0, 4, 120, "")
+addTransaction(connection, 4, 42, "Gas", 2, 2, 130, "Kwik Trip")
+addTransaction(connection, 5, 24, "Acoustic Cafe", 0, 3, 140, "")
 
-# accounts = viewAccounts(connection)
-# for account in accounts:
-#     print(account)
+accounts = viewAccounts(connection)
+for account in accounts:
+    print(account)
 
-# categories = viewCategories(connection)
-# for category in categories:
-#     print(category)
+categories = viewCategories(connection)
+for category in categories:
+    print(category)
 
-# transactions = viewTransactions(connection, 50, 150, 0, 0)
-# for transaction in transactions:
-#     print(transaction)
+transactions = viewTransactions(connection, None, None, None, None)
+for transaction in transactions:
+    print(transaction)
 
-accountIds = [0, 1, 2]
+accountIds = [0, 1]
 categoryIds = [0, 1, 2, 3, 4]
 transactions = advancedViewTransactions(connection, None, None, None, accountIds, categoryIds, None, None, "amount", "DESC", None)
 for transaction in transactions:
