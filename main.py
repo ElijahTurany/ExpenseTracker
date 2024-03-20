@@ -58,12 +58,12 @@ def createDatabase(name):
     query = "CREATE DATABASE " + name
     execute_query(connection, query)     
 
+#Auto incrementing PKs
 def buildTables(connection):
     createAccountTable = """
     CREATE TABLE Account (
         AccountId int(10) NOT NULL PRIMARY KEY ,
         title VARCHAR(20) NOT NULL,
-        balance int(15) NOT NULL,
         UserId int(10) NOT NULL
     );
     """
@@ -117,8 +117,9 @@ def deleteTables(connection):
     execute_query(connection, clearTables)
 
 #Typechecking in the GUI
-def addAccount(connection, accountId, title, balance, userId):
-    query = "INSERT INTO account VALUES(" + str(accountId) + ",  '" + title + "', " + str(balance) + ", " + str(userId) + ")"
+#Add starting balance transaction
+def addAccount(connection, accountId, title, startingBalance, userId):
+    query = "INSERT INTO account VALUES(" + str(accountId) + ",  '" + title + "', " + str(userId) + ")"
     execute_query(connection, query)
     
 def addTransaction(connection, transactionId, amount, description, accountId, categoryId, timestamp, note):
@@ -156,7 +157,7 @@ def viewTransactions(connection, timeframeStart, timeframeEnd, accountId, catego
 
     return read_query(connection, query) 
 
-def advancedViewTransactions(connection, amountLow, amountHigh, description, accountIds, categoryIds, timeframeStart, timeframeEnd, orderBy, ascDesc):
+def advancedViewTransactions(connection, amountLow, amountHigh, description, accountIds, categoryIds, timeframeStart, timeframeEnd, orderBy, ascDesc, note):
     #"WHERE 1=1" is added so adding filters is as simple as adding " AND condition"
     query = "SELECT * FROM transaction WHERE 1=1"
 
@@ -195,6 +196,8 @@ def advancedViewTransactions(connection, amountLow, amountHigh, description, acc
     if (ascDesc is not None):
         query += " " + str(ascDesc)
 
+    #Add note
+
     return read_query(connection, query)
 
 def viewCategories(connection):
@@ -222,31 +225,31 @@ def categorySummary():
 
 # createDatabase("expensetracker")
 connection = create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
-buildTables(connection)
-addUser(connection, 0, 0, 1)
-addAccount(connection, 0, "Wallet", 9, 0)
-addCategory(connection, 0, "Snacks")
-addTransaction(connection, 0, 2, "Candy bar", 0, 0, 100, "")
-addTransaction(connection, 1, 119, "Groceries", 1, 1, 110, "Walmart")
-addTransaction(connection, 2, 6, "Paper Towels", 1, 5, 110, "Walmart")
-addTransaction(connection, 3, 2, "Sewing kit", 0, 4, 120, "")
-addTransaction(connection, 4, 42, "Gas", 3, 2, 130, "Kwik Trip")
-addTransaction(connection, 5, 24, "Acoustic Cafe", 0, 3, 140, "")
+# buildTables(connection)
+# addUser(connection, 0, 0, 1)
+# addAccount(connection, 0, "Wallet", 9, 0)
+# addCategory(connection, 0, "Snacks")
+# addTransaction(connection, 0, 2, "Candy bar", 0, 0, 100, "")
+# addTransaction(connection, 1, 119, "Groceries", 1, 1, 110, "Walmart")
+# addTransaction(connection, 2, 6, "Paper Towels", 1, 5, 110, "Walmart")
+# addTransaction(connection, 3, 2, "Sewing kit", 0, 4, 120, "")
+# addTransaction(connection, 4, 42, "Gas", 3, 2, 130, "Kwik Trip")
+# addTransaction(connection, 5, 24, "Acoustic Cafe", 0, 3, 140, "")
 
-accounts = viewAccounts(connection)
-for account in accounts:
-    print(account)
+# accounts = viewAccounts(connection)
+# for account in accounts:
+#     print(account)
 
-categories = viewCategories(connection)
-for category in categories:
-    print(category)
+# categories = viewCategories(connection)
+# for category in categories:
+#     print(category)
 
-transactions = viewTransactions(connection, 50, 150, 0, 0)
-for transaction in transactions:
-    print(transaction)
+# transactions = viewTransactions(connection, 50, 150, 0, 0)
+# for transaction in transactions:
+#     print(transaction)
 
 accountIds = [0, 1, 2]
 categoryIds = [0, 1, 2, 3, 4]
-transactions = advancedViewTransactions(connection, None, None, None, accountIds, categoryIds, None, None, "amount", "DESC")
+transactions = advancedViewTransactions(connection, None, None, None, accountIds, categoryIds, None, None, "amount", "DESC", None)
 for transaction in transactions:
     print(transaction)
