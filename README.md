@@ -32,3 +32,4 @@ connection = create_server_connection("localhost", "root", "MyDB2024")
 03/20/2024
 https://kivy.org/doc/stable/gettingstarted/installation.html#install-pip
 python kivy_venv\share\kivy-examples\demo\showcase\main.py
+pip install KivyCalendar
