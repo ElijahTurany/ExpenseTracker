@@ -82,6 +82,36 @@ def buildTables(connection):
         Foreign Key (UserId) references users(userId)
     );
     """
+    createTransferTable = """
+    CREATE TABLE MoneyTransfer (
+        transNum int(10) NOT NULL,
+        cusId int(10) NOT NULL,
+        Acc1IdFrom int(10) NOT NULL,
+        Acc2IdTo int(10) NOT NULL,
+        amount int(5),
+        dateOfTran date NOT NULL,
+        Foreign Key (cusId) references customer(cusId),
+        Foreign Key (Acc1IdFrom) references accounts(AccountId),
+        Foreign Key (Acc2IdFrom) references accounts(AccountId)
+        Primary Key (transNum), 
+    );
+    """
+
+    createCustomerTable = """
+    CREATE TABLE customer (
+        cusId int(10) NOT NULL,
+        fname VARCHAR(20) NOT NULL,
+        lname VARCHAR(20) NOT NULL,
+        dob VARCHAR(20) NOT NULL,
+        email VARCHAR(20) NOT NULL,
+        phone VARCHAR(20) NOT NULL,
+        city VARCHAR(20) NOT NULL,
+        state VARCHAR(20) NOT NULL,
+        zipcode VARCHAR(20) NOT NULL,
+        street VARCHAR(20) NOT NULL,
+        Primary Key (cusId), 
+    );
+    """
     createTransactionsTable = """
     CREATE TABLE transactions (
         transactionNum int(10) NOT NULL,
@@ -106,8 +136,16 @@ def buildTables(connection):
     createUsersTable = """
     CREATE TABLE users (
         userId int(10) NOT NULL,
-        numberOfAccounts int(8),
-        levelOfAccess int(2) NOT NULL,
+        fname VARCHAR(20) NOT NULL,
+        lname VARCHAR(20) NOT NULL,
+        email VARCHAR(20) NOT NULL,
+        phone VARCHAR(20) NOT NULL,
+        city VARCHAR(20) NOT NULL,
+        state VARCHAR(20) NOT NULL,
+        zipcode VARCHAR(20) NOT NULL,
+        street VARCHAR(20) NOT NULL,
+        type int(2) NOT NULL,
+        title VARCHAR(30) NOT NULL,
         Primary Key (userId)
     );
     """
