@@ -75,11 +75,11 @@ def createDatabase(name):
 def buildTables(connection):
     createAccountsTable = """
     CREATE TABLE accounts (
-        AccountId int(10) NOT NULL,
+        accountId int(10) NOT NULL,
         title VARCHAR(20) NOT NULL,
-        UserId int(10) NOT NULL,
-        Primary Key (AccountId),
-        Foreign Key (UserId) references users(userId)
+        userId int(10) NOT NULL,
+        Primary Key (accountId),
+        Foreign Key (userId) references users(userId)
     );
     """
     createTransferTable = """
@@ -91,9 +91,9 @@ def buildTables(connection):
         amount int(5),
         dateOfTran date NOT NULL,
         Foreign Key (cusId) references customer(cusId),
-        Foreign Key (Acc1IdFrom) references accounts(AccountId),
-        Foreign Key (Acc2IdFrom) references accounts(AccountId)
-        Primary Key (transNum), 
+        Foreign Key (Acc1IdFrom) references accounts(accountId),
+        Foreign Key (Acc2IdTo) references accounts(accountId),
+        Primary Key (transNum) 
     );
     """
 
@@ -109,7 +109,7 @@ def buildTables(connection):
         state VARCHAR(20) NOT NULL,
         zipcode VARCHAR(20) NOT NULL,
         street VARCHAR(20) NOT NULL,
-        Primary Key (cusId), 
+        Primary Key (cusId) 
     );
     """
     createTransactionsTable = """
@@ -122,7 +122,7 @@ def buildTables(connection):
         timestamp VARCHAR(30),
         note VARCHAR(100),
         Primary Key (transactionNum),
-        Foreign Key (accountId) references accounts(AccountId),
+        Foreign Key (accountId) references accounts(accountId),
         Foreign Key (categoryId) references categories(categoryId)
     );
     """
@@ -151,9 +151,12 @@ def buildTables(connection):
     """
 
     execute_query(connection, createAccountsTable)
+    execute_query(connection, createTransferTable)
+    execute_query(connection, createCustomerTable)
     execute_query(connection, createTransactionsTable)
     execute_query(connection, createCategoriesTable)
     execute_query(connection, createUsersTable)
+    
 
 #Command out of sync error
 def clearTables(connection):
@@ -162,6 +165,8 @@ def clearTables(connection):
         TRUNCATE TABLE transactions;
         TRUNCATE TABLE categories;
         TRUNCATE TABLE users;
+        TRUNCATE TABLE customer;
+        TRUNCATE TABLE moneytransfer;
     """
     execute_query(connection, clearTables)
 def deleteTables(connection):
@@ -170,6 +175,8 @@ def deleteTables(connection):
         DROP TABLE transactions;
         DROP TABLE categories;
         DROP TABLE users;
+        DROP TABLE customer;
+        DROP TABLE moneytransfer;
     """
     execute_query(connection, clearTables)
 
@@ -181,12 +188,18 @@ def addAccount(connection, accountId, title, userId):
 def addTransaction(connection, transactionId, amount, description, accountId, categoryId, timestamp, note):
     query = "INSERT INTO transactions VALUES(" + str(transactionId) + ",  " + str(amount) + ", '" + description + "', " + str(accountId) + ", " + str(categoryId) + ", " + str(timestamp) + ", '" + note +"')"
     execute_query(connection, query) 
+    print(query)
 def addCategory(connection, categoryId, name):
     query = "INSERT INTO categories VALUES(" + str(categoryId) + ",  '" + name + "')"
     execute_query(connection, query)
-def addUser(connection, userId, numAccounts, levelOfAccess):
-    query = "INSERT INTO users VALUES(" + str(userId) + ",  " + str(numAccounts) + ",  " + str(levelOfAccess) +")"
+def addUser(connection, userId, firstName, lastName, email, phone, city, state, zipcode, street, type, title):
+    query = "INSERT INTO users VALUES(" + str(userId) + ",  '" + firstName + "',  '" + lastName + "', '" + email + "', " + str(phone) + ", '" + city + "', '" + state + "', " + str(zipcode) + ", '" + street + "', " + str(type) + ", '" + title + "')"
     execute_query(connection, query)
+
+def addTransfer():
+    pass
+def addCustomer():
+    pass
 
 def viewAccounts(connection):
     query = "SELECT * FROM accounts"
@@ -255,6 +268,11 @@ def viewCategories(connection):
     query = "SELECT * FROM categories"
     return read_query(connection, query)
 
+def viewTransfers():
+    pass
+def viewCustomers():
+    pass
+
 def renameAccount(connection, AccountId_, newAccountName):
     query = "UPDATE accounts SET accountName = newAccountName WHERE AccountId = AccountId_"
     return read_query(connection, query)
@@ -264,6 +282,9 @@ def editTransaction(connection, transactionNum_, newAmount, newDescription, acco
 def renameCategory(connection, categoryId_, newCategoryName):
     query = "UPDATE categories SET categoryName = newCategoryName WHERE categoryId = categoryId_"
     return read_query(connection, query)
+
+def editTransfer():
+    pass
 
 # used mostly for testing purposes
 # different methods later to clear data from the GUI but not from actual database
@@ -277,13 +298,16 @@ def deleteCategory(connection, categoryId_):
     query = "DELETE from categories WHERE categoryId = categoryId_"
     return read_query(connection, query)
 
+def deleteTransfer():
+    pass
+
 def timeSummary():
     pass
 def categorySummary():
     pass
 
 def populateTables(connection):
-    addUser(connection, 0, 0, 1)
+    addUser(connection, 0, "first", "last", "abc@email.com", 15551239876, "city", "state", 12345, "street", 0, "title")
     addAccount(connection, 0, "Wallet", 0)
     addAccount(connection, 1, "DebitCard", 0)
     addAccount(connection, 2, "CreditCard", 0)
@@ -319,8 +343,8 @@ def printTables(connection):
     for transaction in transactions:
         print(transaction)
 
-# createDatabase("expensetracker")
-#connection = create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
+#createDatabase("expensetracker")
+connection = create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
 #deleteTables(connection)
 #buildTables(connection)
 #clearTables(connection)
@@ -412,5 +436,4 @@ class CreateTransaction(GridLayout):
 class CreateTransactionApp(App):
     def build(self):
         return CreateTransaction()
-
 CreateTransactionApp().run()   
