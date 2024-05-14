@@ -440,8 +440,119 @@ class CreateTransaction(GridLayout):
         connection = create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
         addTransaction(connection, transactionId, amount, description, accountId, categoryId, datetime, note)
 
+class DropdownButton(Button):
+    def __init__(self, **kwargs):
+        super(DropdownButton, self).__init__(**kwargs)
+        self.dropList = DropDown()
+
+        types = ['Item1', 'Item2', 'Item3', 'Item4', 'Item5', 'Item6']
+
+        for i in types:
+            btn = Button(text=i, size_hint_y=None, height=50)
+            btn.bind(on_release=lambda btn: self.dropList.select(btn.text))
+           
+            self.dropList.add_widget(btn)
+
+        self.bind(on_release=self.dropList.open)
+        self.dropList.bind(on_select=lambda instance, x: setattr(self, 'text', x))
+        self.text = 'Select'
+
+class ViewTransaction(GridLayout):
+    def __init__(self, **kwargs):
+        super(ViewTransaction, self).__init__(**kwargs)
+        self.cols = 3
+
+        #Account
+        accountLayout = BoxLayout(orientation='vertical')
+        accountLayout.add_widget(Label(text='Account'))
+        accountLayout.add_widget(DropdownButton())
+
+        #Category
+        categoryLayout = BoxLayout(orientation='vertical')
+        categoryLayout.add_widget(Label(text='Category'))
+        categoryLayout.add_widget(DropdownButton())
+
+        #Sort
+        sortLayout = BoxLayout(orientation='vertical')
+        sortLayout.add_widget(Label(text='Sort By'))
+        sortLayout.add_widget(DropdownButton())
+
+        #Order
+        orderLayout = BoxLayout(orientation='vertical')
+        orderLayout.add_widget(Label(text='Order'))
+        orderLayout.add_widget(DropdownButton())
+
+        #Description
+        descriptionLayout = BoxLayout(orientation='vertical')
+        #Title
+        descriptionTitle = AnchorLayout(anchor_x='left', anchor_y='center')
+        descriptionTitle.add_widget(Label(text='Description'))
+        descriptionLayout.add_widget(descriptionTitle)
+        #Input
+        descriptionValue = BoxLayout(orientation='horizontal')
+        descriptionValue.add_widget(DropdownButton())
+        description = TextInput(multiline=False)
+        descriptionValue.add_widget(description)
+        descriptionLayout.add_widget(descriptionValue)
         
-class CreateTransactionApp(App):
+        #Note
+        noteLayout = BoxLayout(orientation='vertical')
+        #Title
+        noteTitle = AnchorLayout(anchor_x='left', anchor_y='center')
+        noteTitle.add_widget(Label(text='Note'))
+        noteLayout.add_widget(noteTitle)
+        #Input
+        noteValue = BoxLayout(orientation='horizontal')
+        noteValue.add_widget(DropdownButton())
+        note = TextInput(multiline=False)
+        noteValue.add_widget(note)
+        noteLayout.add_widget(noteValue)
+
+        #Timeframe
+        timeframeLayout = BoxLayout(orientation='vertical')
+        #Title
+        timeframeTitle = AnchorLayout(anchor_x='left', anchor_y='center')
+        timeframeTitle.add_widget(Label(text='Timeframe'))
+        timeframeLayout.add_widget(timeframeTitle)
+        #Input
+        timeframeValue = BoxLayout(orientation='horizontal')
+        timeframeValue.add_widget(DropdownButton())
+        timeframeStart = TextInput(multiline=False)
+        timeframeEnd = TextInput(multiline=False)
+        timeframeValue.add_widget(timeframeStart)
+        timeframeValue.add_widget(Label(text='and'))
+        timeframeValue.add_widget(timeframeEnd)
+        timeframeLayout.add_widget(timeframeValue)
+
+        #Amount
+        amountLayout = BoxLayout(orientation='vertical')
+        #Title
+        amountTitle = AnchorLayout(anchor_x='left', anchor_y='center')
+        amountTitle.add_widget(Label(text='Amount'))
+        amountLayout.add_widget(amountTitle)
+        #Input
+        amountValue = BoxLayout(orientation='horizontal')
+        amountValue.add_widget(DropdownButton())
+        amountLow = TextInput(multiline=False)
+        amountHigh = TextInput(multiline=False)
+        amountValue.add_widget(amountLow)
+        amountValue.add_widget(Label(text='and'))
+        amountValue.add_widget(amountHigh)
+        amountLayout.add_widget(amountValue)
+
+        self.add_widget(categoryLayout)
+        self.add_widget(descriptionLayout)
+        self.add_widget(timeframeLayout)
+        self.add_widget(accountLayout)
+        self.add_widget(noteLayout)
+        self.add_widget(amountLayout)
+        self.add_widget(sortLayout)
+        self.add_widget(orderLayout)
+
+
+        
+        
+class KivyApp(App):
     def build(self):
-        return CreateTransaction()
-CreateTransactionApp().run()   
+        return ViewTransaction()
+KivyApp().run()   
