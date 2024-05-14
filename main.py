@@ -63,23 +63,19 @@ def read_query(connection, query):
     except Error as err:
         print(f"Error: '{err}'")
 
-#NOT stolen
+
 def createDatabase(name):
     connection = create_server_connection("localhost", "root", "MyDB2024")
     query = "CREATE DATABASE " + name
     execute_query(connection, query)     
 
-#Auto incrementing PKs
-#Creates the tables with the necessary information, NEED TO ADD TRANSFER TABLE!!!!!!!!!!#
-#####################################################################################
+#Creating tables for the databse
 def buildTables(connection):
     createAccountsTable = """
     CREATE TABLE accounts (
         accountId int(10) NOT NULL,
         title VARCHAR(20) NOT NULL,
-        userId int(10) NOT NULL,
         Primary Key (accountId),
-        Foreign Key (userId) references users(userId)
     );
     """
     createTransferTable = """
@@ -147,6 +143,18 @@ def buildTables(connection):
         type int(2) NOT NULL,
         title VARCHAR(30) NOT NULL,
         Primary Key (userId)
+    );
+    """
+
+    createRegisteredAccountsTable = """
+    CREATE TABLE users (
+        cusId int(10) NOT NULL,
+        accountId int(10) NOT NULL,
+        date VARCHAR(20),
+        Primary Key (accountId, cusId),
+        Foreign Key (accountId) references accounts(accountId),
+        Foreign Key (cusId) references customer(cusId)
+
     );
     """
 
