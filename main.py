@@ -457,6 +457,34 @@ class DropdownButton(Button):
         self.dropList.bind(on_select=lambda instance, x: setattr(self, 'text', x))
         self.text = 'Select'
 
+class StaticDropdown(Button):
+    #Callback function called when text is selected
+    def callback(self, text):
+        #Updates dropdown text to text selected
+        self.dropList.select(text)
+        #Sets dropdown value to index of text selected
+        setattr(self, 'value', self.values.index(text))
+
+    def __init__(self, values, initVal, **kwargs):
+        super(StaticDropdown, self).__init__(**kwargs)
+        self.dropList = DropDown()
+
+        #Creates button for each value passed in
+        self.values = values
+        for i in self.values:
+            btn = Button(text=i, size_hint_y=None, height=50)
+            #Binds button to callback function and adds button to dropdown
+            btn.bind(on_release=lambda btn: self.callback(btn.text))
+            self.dropList.add_widget(btn)
+
+        #Binds button to open dropdown when clicked
+        self.bind(on_release=self.dropList.open)
+        self.dropList.bind(on_select=lambda instance, x: setattr(self, 'text', x))
+        #Sets the initial value if positive value is passed in
+        if (initVal >= 0):
+            self.callback(values[initVal])    
+
+
 class ViewTransaction(GridLayout):
     def __init__(self, **kwargs):
         super(ViewTransaction, self).__init__(**kwargs)
@@ -475,12 +503,13 @@ class ViewTransaction(GridLayout):
         #Sort
         sortLayout = BoxLayout(orientation='vertical')
         sortLayout.add_widget(Label(text='Sort By'))
-        sortLayout.add_widget(DropdownButton())
+        sortLayout.add_widget(StaticDropdown(['Account', 'Amount', 'Category', 'Description', 'Note', 'Timeframe'], 5))
+        
 
         #Order
         orderLayout = BoxLayout(orientation='vertical')
         orderLayout.add_widget(Label(text='Order'))
-        orderLayout.add_widget(DropdownButton())
+        orderLayout.add_widget(StaticDropdown(['ASC', 'DESC'], 1))
 
         #Description
         descriptionLayout = BoxLayout(orientation='vertical')
@@ -490,7 +519,7 @@ class ViewTransaction(GridLayout):
         descriptionLayout.add_widget(descriptionTitle)
         #Input
         descriptionValue = BoxLayout(orientation='horizontal')
-        descriptionValue.add_widget(DropdownButton())
+        descriptionValue.add_widget(StaticDropdown(['N/A', 'Contains', 'Equals', 'Starts With', 'Ends With', 'Is Empty', 'Isn\'t Empty'], 0))
         description = TextInput(multiline=False)
         descriptionValue.add_widget(description)
         descriptionLayout.add_widget(descriptionValue)
@@ -503,7 +532,7 @@ class ViewTransaction(GridLayout):
         noteLayout.add_widget(noteTitle)
         #Input
         noteValue = BoxLayout(orientation='horizontal')
-        noteValue.add_widget(DropdownButton())
+        noteValue.add_widget(StaticDropdown(['N/A', 'Contains', 'Equals', 'Starts With', 'Ends With', 'Is Empty', 'Isn\'t Empty'], 0))
         note = TextInput(multiline=False)
         noteValue.add_widget(note)
         noteLayout.add_widget(noteValue)
@@ -516,7 +545,7 @@ class ViewTransaction(GridLayout):
         timeframeLayout.add_widget(timeframeTitle)
         #Input
         timeframeValue = BoxLayout(orientation='horizontal')
-        timeframeValue.add_widget(DropdownButton())
+        timeframeValue.add_widget(StaticDropdown(['N/A', 'Before', 'After', 'At', 'Between'], 0))
         timeframeStart = TextInput(multiline=False)
         timeframeEnd = TextInput(multiline=False)
         timeframeValue.add_widget(timeframeStart)
@@ -532,7 +561,7 @@ class ViewTransaction(GridLayout):
         amountLayout.add_widget(amountTitle)
         #Input
         amountValue = BoxLayout(orientation='horizontal')
-        amountValue.add_widget(DropdownButton())
+        amountValue.add_widget(StaticDropdown(['N/A', 'Below', 'Above', 'Equal To', 'Between'], 0))
         amountLow = TextInput(multiline=False)
         amountHigh = TextInput(multiline=False)
         amountValue.add_widget(amountLow)
@@ -550,8 +579,6 @@ class ViewTransaction(GridLayout):
         self.add_widget(orderLayout)
 
 
-        
-        
 class KivyApp(App):
     def build(self):
         return ViewTransaction()
