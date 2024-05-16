@@ -8,22 +8,24 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.checkbox import CheckBox
 from kivy.uix.dropdown import DropDown
 from kivy.uix.button import Button
-import dropdown as dropdown
+import dropdown
+import sql
 
 class ViewTransaction(GridLayout):
     def __init__(self, **kwargs):
         super(ViewTransaction, self).__init__(**kwargs)
         self.cols = 3
+        self.connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
 
         #Account
         accountLayout = BoxLayout(orientation='vertical')
         accountLayout.add_widget(Label(text='Account'))
-        accountLayout.add_widget(dropdown.DropdownButton())
+        accountLayout.add_widget(dropdown.DynamicDropdown(self.connection, "accounts", ['N/A'], -1))
 
         #Category
         categoryLayout = BoxLayout(orientation='vertical')
         categoryLayout.add_widget(Label(text='Category'))
-        categoryLayout.add_widget(dropdown.DropdownButton())
+        categoryLayout.add_widget(dropdown.DynamicDropdown(self.connection, "categories", ['N/A'], -1))
 
         #Sort
         sortLayout = BoxLayout(orientation='vertical')

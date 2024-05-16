@@ -8,23 +8,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.checkbox import CheckBox
 from kivy.uix.dropdown import DropDown
 from kivy.uix.button import Button
-
-class DropdownButton(Button):
-    def __init__(self, **kwargs):
-        super(DropdownButton, self).__init__(**kwargs)
-        self.dropList = DropDown()
-
-        types = ['Item1', 'Item2', 'Item3', 'Item4', 'Item5', 'Item6']
-
-        for i in types:
-            btn = Button(text=i, size_hint_y=None, height=50)
-            btn.bind(on_release=lambda btn: self.dropList.select(btn.text))
-           
-            self.dropList.add_widget(btn)
-
-        self.bind(on_release=self.dropList.open)
-        self.dropList.bind(on_select=lambda instance, x: setattr(self, 'text', x))
-        self.text = 'Select'
+import sql
 
 class StaticDropdown(Button):
     #Callback function called when text is selected
@@ -41,6 +25,7 @@ class StaticDropdown(Button):
         #Creates button for each value passed in
         self.values = values
         for i in self.values:
+            #Creates a button with text of each value
             btn = Button(text=i, size_hint_y=None, height=50)
             #Binds button to callback function and adds button to dropdown
             btn.bind(on_release=lambda btn: self.callback(btn.text))
@@ -49,6 +34,58 @@ class StaticDropdown(Button):
         #Binds button to open dropdown when clicked
         self.bind(on_release=self.dropList.open)
         self.dropList.bind(on_select=lambda instance, x: setattr(self, 'text', x))
-        #Sets the initial value if positive value is passed in
-        if (initVal >= 0):
-            self.callback(values[initVal])    
+        #Sets the initial value if passed in
+        if (initVal != None):
+            self.callback(values[initVal])
+
+class DynamicDropdown(Button):
+    #Callback function called when text is selected
+    def callback(self, btn):
+        #Updates dropdown text to text of selected button
+        self.dropList.select(btn.text)
+        #Sets dropdown value to id of selected button
+        setattr(self, 'value', btn.id)
+
+    def __init__(self, connection, table, otherVals, initVal, **kwargs):
+        super(DynamicDropdown, self).__init__(**kwargs)
+        self.dropList = DropDown()
+
+        #Gets values from given table name
+        if (table == "categories"):
+            self.values = sql.viewCategories(connection)
+        elif (table == "accounts"):
+            self.values = sql.viewAccounts(connection)
+
+        buttons = []
+        #Adds buttons for otherVals passed in first
+        if otherVals != None:
+            #J is used as the id for otherVals, and starts at -1
+            j = -1
+            for i in otherVals:
+                #Creates a button with text of each value
+                btn = Button(text=i, size_hint_y=None, height=50)
+                #id is assigned to j, j decrements
+                btn.id = j
+                j -= 1
+                #Binds button to callback function and adds button to dropdown and buttons array
+                btn.bind(on_release=lambda btn: self.callback(btn))
+                self.dropList.add_widget(btn)
+                buttons.append(btn)
+
+        for i in self.values:
+            #Creates a button with text and id of each value
+            btn = Button(text=i[1], size_hint_y=None, height=50)
+            btn.id = i[0]
+            #Binds button to callback function and adds button to dropdown and buttons array
+            btn.bind(on_release=lambda btn: self.callback(btn))
+            self.dropList.add_widget(btn)
+            buttons.append(btn)
+
+        #Binds button to open dropdown when clicked
+        self.bind(on_release=self.dropList.open)
+        self.dropList.bind(on_select=lambda instance, x: setattr(self, 'text', x))
+
+        #Sets the initial value if passed in
+        if (initVal != None):
+            #Adding length of otherVals aligns negative values passed in with buttons array
+            self.callback(buttons[initVal + len(otherVals)])

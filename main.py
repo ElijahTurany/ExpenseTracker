@@ -21,7 +21,7 @@ connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expenset
 #buildTables(connection)
 #clearTables(connection)
 #populateTables(connection)
-#printTables(connection)
+#sql.printTables(connection)
 
 class KivyApp(App):
     def build(self):
