@@ -16,7 +16,9 @@ class StaticDropdown(Button):
         #Updates dropdown text to text selected
         self.dropList.select(text)
         #Sets dropdown value to index of text selected
-        setattr(self, 'value', self.values.index(text))
+        self.value = self.values.index(text)
+
+        #self.dropList.select(str(self.value))
 
     def __init__(self, values, initVal, **kwargs):
         super(StaticDropdown, self).__init__(**kwargs)
@@ -44,7 +46,7 @@ class DynamicDropdown(Button):
         #Updates dropdown text to text of selected button
         self.dropList.select(btn.text)
         #Sets dropdown value to id of selected button
-        setattr(self, 'value', btn.id)
+        self.value = btn.id
 
     def __init__(self, connection, table, otherVals, initVal, **kwargs):
         super(DynamicDropdown, self).__init__(**kwargs)

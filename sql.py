@@ -231,7 +231,7 @@ def advancedViewTransactions(connection, amountLow, amountHigh, description, acc
         query += " AND amount <= " + str(amountHigh)
 
     if (description is not None):
-        query += " AND description = '" + str(description) + "'"
+        query += " AND description LIKE '" + str(description) + "'"
 
     if (accountIds is not None):
         query += " AND ("
@@ -252,13 +252,14 @@ def advancedViewTransactions(connection, amountLow, amountHigh, description, acc
     elif (timeframeEnd is not None):
         query += " AND timestamp <= " + str(timeframeEnd)
 
+    if (note is not None):
+        query += "AND note LIKE '" + str(description) + "'"
+
     if (orderBy is not None):
         query += " ORDER BY " + str(orderBy)
 
     if (ascDesc is not None):
         query += " " + str(ascDesc)
-
-    #Add note
 
     return read_query(connection, query)
 def viewCategories(connection):
