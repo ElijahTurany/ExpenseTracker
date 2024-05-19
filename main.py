@@ -23,6 +23,11 @@ connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expenset
 #populateTables(connection)
 #sql.printTables(connection)
 
+# transactions = sql.advancedViewTransactions(connection, 0, 100, None, None, None, 100, 140, None, None, None)
+# for transaction in transactions:
+#     for item in transaction:
+#         print(item)
+
 class KivyApp(App):
     def build(self):
         return vt.ViewTransaction()

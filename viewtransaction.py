@@ -11,11 +11,13 @@ from kivy.uix.button import Button
 import dropdown
 import sql
 
-class ViewTransaction(GridLayout):
+class ViewTransaction(BoxLayout):
     def __init__(self, **kwargs):
         super(ViewTransaction, self).__init__(**kwargs)
-        self.cols = 3
+        self.orientation='vertical'
         self.connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
+
+        filterLayout = GridLayout(cols=3)
 
         #Account
         accountLayout = BoxLayout(orientation='vertical')
@@ -104,20 +106,31 @@ class ViewTransaction(GridLayout):
         amountLayout.add_widget(amountValue)
 
         searchButton = Button(text='Search', on_press=self.viewTransactions)
-        #Results
-        resultLayout = GridLayout(cols = 7)
 
-        self.add_widget(categoryLayout)
-        self.add_widget(descriptionLayout)
-        self.add_widget(timeframeLayout)
-        self.add_widget(accountLayout)
-        self.add_widget(noteLayout)
-        self.add_widget(amountLayout)
-        self.add_widget(sortLayout)
-        self.add_widget(orderLayout)
-        self.add_widget(searchButton)
+        filterLayout.add_widget(categoryLayout)
+        filterLayout.add_widget(descriptionLayout)
+        filterLayout.add_widget(timeframeLayout)
+        filterLayout.add_widget(accountLayout)
+        filterLayout.add_widget(noteLayout)
+        filterLayout.add_widget(amountLayout)
+        filterLayout.add_widget(sortLayout)
+        filterLayout.add_widget(orderLayout)
+        filterLayout.add_widget(searchButton)
 
-        self.add_widget(resultLayout)
+        self.headerValues = ["transactionNum", "amount", "description", "accoundId", "categoryId", "timestamp", "note"]
+
+        # headerLayout = GridLayout(cols = 7, row_force_default=True, row_default_height=10)
+        # headerValues = ["transactionNum", "amount", "description", "accoundId", "categoryId", "timestamp", "note"]
+        
+
+        self.resultLayout = GridLayout(cols = 7)
+
+        for value in self.headerValues:
+            self.resultLayout.add_widget(Label(text=str(value)))
+
+        self.add_widget(filterLayout)
+        # self.add_widget(headerLayout)
+        self.add_widget(self.resultLayout)
 
     def viewTransactions(self, instance):
         match(self.amountDropdown.value):
@@ -128,19 +141,19 @@ class ViewTransaction(GridLayout):
             #Below
             case 1:
                 amountLow = None
-                amountHigh = self.amountLow
+                amountHigh = self.amountLow.text
             #Above
             case 2:
-                amountLow = self.amountLow
+                amountLow = self.amountLow.text
                 amountHigh = None
             #Between
             case 3:
-                amountLow = self.amountLow
-                amountHigh = self.amountHigh
+                amountLow = self.amountLow.text
+                amountHigh = self.amountHigh.text
             #Equal To
             case 4:
-                amountLow = self.amountLow
-                amountHigh = self.amountLow
+                amountLow = self.amountLow.text
+                amountHigh = self.amountLow.text
         
         match(self.descriptionDropdown.value):
             #N/A
@@ -148,20 +161,28 @@ class ViewTransaction(GridLayout):
                 description = None
             #Contains
             case 1:
-                description = '%' + self.description + '%'
+                description = '%' + self.description.text + '%'
             #Equals
             case 2:
-                description = self.description
+                description = self.description.text
             #Starts With
             case 3:
-                description = self.description + '%'
+                description = self.description.text + '%'
             #End With
             case 4:
-                description = '%' + self.description
+                description = '%' + self.description.text
 
         #Add multiselect functionality
-        accountIds = {self.accountDropdown.value}
-        categoryIds = {self.categoryDropdown.value}
+        if(self.accountDropdown.value == -1):
+            accountIds = None
+        else:
+            accountIds = {self.accountDropdown.value}
+
+        #Add multiselect functionality 
+        if(self.categoryDropdown.value == -1):
+            categoryIds = None
+        else:
+            categoryIds = {self.categoryDropdown.value}
 
         match(self.timeframeDropdown.value):
             #N/A
@@ -171,19 +192,19 @@ class ViewTransaction(GridLayout):
             #Before
             case 1:
                 timeframeStart = None
-                timeframeEnd = self.timeframeStart
+                timeframeEnd = self.timeframeStart.text
             #After
             case 2:
-                timeframeStart = self.timeframeStart
+                timeframeStart = self.timeframeStart.text
                 timeframeEnd = None
             #Between
             case 3:
-                timeframeStart = self.timeframeStart
-                timeframeEnd = self.timeframeEnd
+                timeframeStart = self.timeframeStart.text
+                timeframeEnd = self.timeframeEnd.text
             #At
             case 4:
-                timeframeStart = self.timeframeStart
-                timeframeEnd = self.timeframeStart
+                timeframeStart = self.timeframeStart.text
+                timeframeEnd = self.timeframeStart.text
 
         match(self.sortDropdown.value):
             #Make alphabetical
@@ -213,16 +234,16 @@ class ViewTransaction(GridLayout):
                 note = None
             #Contains
             case 1:
-                note = '%' + self.note + '%'
+                note = '%' + self.note.text + '%'
             #Equals
             case 2:
-                note = self.note
+                note = self.note.text
             #Starts With
             case 3:
-                note = self.note + '%'
+                note = self.note.text + '%'
             #Ends With
             case 4:
-                note = '%' + self.note
+                note = '%' + self.note.text
             #Is Empty
             case 5:
                 note = ''
@@ -230,4 +251,32 @@ class ViewTransaction(GridLayout):
             case 6:         
                 note = '%_%'
 
+        self.resultLayout.clear_widgets()
+
+        # self.resultLayout.add_widget(Label(text=str(amountLow)))
+        # self.resultLayout.add_widget(Label(text=str(amountHigh)))
+        # self.resultLayout.add_widget(Label(text=str(description)))
+        # self.resultLayout.add_widget(Label(text=str(accountIds)))
+        # self.resultLayout.add_widget(Label(text=str(categoryIds)))
+        # self.resultLayout.add_widget(Label(text=str(timeframeStart)))
+        # self.resultLayout.add_widget(Label(text=str(timeframeEnd)))
+        # self.resultLayout.add_widget(Label(text=str(orderBy)))
+        # self.resultLayout.add_widget(Label(text=str(ascDesc)))
+        # self.resultLayout.add_widget(Label(text=str(note)))
+
         transactions = sql.advancedViewTransactions(self.connection, amountLow, amountHigh, description, accountIds, categoryIds, timeframeStart, timeframeEnd, orderBy, ascDesc, note)
+        #transactions = sql.advancedViewTransactions(self.connection, amountLow, amountHigh, None, None, None, None, None, None, None, None)
+        #transactions = sql.advancedViewTransactions(self.connection, 0, 100, None, None, None, 100, 140, None, None, None)
+        #transaction = ["a", "b", "c", "d", "e", "f", "g"]
+
+        
+        for value in self.headerValues:
+            self.resultLayout.add_widget(Label(text=str(value)))
+
+        for transaction in transactions:
+            for value in transaction:
+                self.resultLayout.add_widget(Label(text=str(value)))
+
+        # for transaction in transactions:
+        #     for value in transaction:
+        #         self.resultLayout.add_widget(Label(text=value))
