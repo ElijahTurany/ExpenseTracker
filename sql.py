@@ -253,7 +253,7 @@ def advancedViewTransactions(connection, amountLow, amountHigh, description, acc
         query += " AND timestamp <= " + str(timeframeEnd)
 
     if (note is not None):
-        query += "AND note LIKE '" + str(description) + "'"
+        query += " AND note LIKE '" + str(note) + "'"
 
     if (orderBy is not None):
         query += " ORDER BY " + str(orderBy)
