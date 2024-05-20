@@ -105,7 +105,7 @@ class ViewTransaction(BoxLayout):
         amountValue.add_widget(self.amountHigh)
         amountLayout.add_widget(amountValue)
 
-        searchButton = Button(text='Search', on_press=self.viewTransactions)
+        searchButton = Button(text='Search', on_press=self.search)
 
         filterLayout.add_widget(categoryLayout)
         filterLayout.add_widget(descriptionLayout)
@@ -132,7 +132,7 @@ class ViewTransaction(BoxLayout):
         # self.add_widget(headerLayout)
         self.add_widget(self.resultLayout)
 
-    def viewTransactions(self, instance):
+    def search(self, instance):
         match(self.amountDropdown.value):
             #N/A
             case 0:
@@ -253,30 +253,11 @@ class ViewTransaction(BoxLayout):
 
         self.resultLayout.clear_widgets()
 
-        # self.resultLayout.add_widget(Label(text=str(amountLow)))
-        # self.resultLayout.add_widget(Label(text=str(amountHigh)))
-        # self.resultLayout.add_widget(Label(text=str(description)))
-        # self.resultLayout.add_widget(Label(text=str(accountIds)))
-        # self.resultLayout.add_widget(Label(text=str(categoryIds)))
-        # self.resultLayout.add_widget(Label(text=str(timeframeStart)))
-        # self.resultLayout.add_widget(Label(text=str(timeframeEnd)))
-        # self.resultLayout.add_widget(Label(text=str(orderBy)))
-        # self.resultLayout.add_widget(Label(text=str(ascDesc)))
-        # self.resultLayout.add_widget(Label(text=str(note)))
-
         transactions = sql.advancedViewTransactions(self.connection, amountLow, amountHigh, description, accountIds, categoryIds, timeframeStart, timeframeEnd, orderBy, ascDesc, note)
-        #transactions = sql.advancedViewTransactions(self.connection, amountLow, amountHigh, None, None, None, None, None, None, None, None)
-        #transactions = sql.advancedViewTransactions(self.connection, 0, 100, None, None, None, 100, 140, None, None, None)
-        #transaction = ["a", "b", "c", "d", "e", "f", "g"]
 
-        
         for value in self.headerValues:
             self.resultLayout.add_widget(Label(text=str(value)))
 
         for transaction in transactions:
             for value in transaction:
                 self.resultLayout.add_widget(Label(text=str(value)))
-
-        # for transaction in transactions:
-        #     for value in transaction:
-        #         self.resultLayout.add_widget(Label(text=value))
