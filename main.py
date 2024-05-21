@@ -30,5 +30,5 @@ connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expenset
 
 class KivyApp(App):
     def build(self):
-        return vt.ViewTransaction()
+        return ct.CreateTransaction()
 KivyApp().run()   

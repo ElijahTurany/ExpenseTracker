@@ -1,4 +1,5 @@
 from random import random
+from datetime import datetime
 import kivy
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
@@ -9,12 +10,18 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.checkbox import CheckBox
 from kivy.uix.dropdown import DropDown
 from kivy.uix.button import Button
+from kivymd.app import MDApp
+from kivymd.uix.pickers import MDTimePicker
+from kivymd.uix.pickers import MDDatePicker
 import sql
-
+import dropdown
+		
 class CreateTransaction(GridLayout):
     def __init__(self, **kwargs):
+
         super(CreateTransaction, self).__init__(**kwargs)
         self.cols = 2
+        self.connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
 
         self.exit = Button(text='Exit')
         self.add_widget(self.exit)
@@ -22,18 +29,18 @@ class CreateTransaction(GridLayout):
         self.add_widget(Label(text='Create a Transaction'))
 
         incomeExpenseLayout = GridLayout(cols=2)
-        income = CheckBox(group = 'incomeExpense', active = True)
-        expense = CheckBox(group = 'incomeExpense')
+        self.income = CheckBox(group = 'incomeExpense', allow_no_selection=False, active = True)
+        self.expense = CheckBox(group = 'incomeExpense', allow_no_selection=False)
         incomeExpenseLayout.add_widget(Label(text='Income'))
-        incomeExpenseLayout.add_widget(income)
+        incomeExpenseLayout.add_widget(self.income)
         incomeExpenseLayout.add_widget(Label(text='Expense'))
-        incomeExpenseLayout.add_widget(expense)
+        incomeExpenseLayout.add_widget(self.expense)
 
         self.add_widget(incomeExpenseLayout)
         self.add_widget(Label())
 
         self.add_widget(Label(text='Amount'))
-        self.amount = TextInput(multiline=False)
+        self.amount = TextInput(multiline=False, input_filter="int")
         self.add_widget(self.amount)
 
         self.add_widget(Label(text='Description'))
@@ -41,19 +48,12 @@ class CreateTransaction(GridLayout):
         self.add_widget(self.description)
 
         self.add_widget(Label(text='Account'))
-        dropdown = DropDown()
-        for i in range(3):
-            button = Button(text=str(i), size_hint_y=None, height=44)
-            button.bind(on_release=lambda button: dropdown.select(button.text))
-            dropdown.add_widget(button)
-        self.account = Button(text='Account')
-        self.account.bind(on_release=dropdown.open)
-        dropdown.bind(on_select=lambda instance, x: setattr(self.account, 'text', x))
-        self.add_widget(self.account)
+        self.accountDropdown = dropdown.DynamicDropdown(self.connection, "accounts", ['N/A'], -1)
+        self.add_widget(self.accountDropdown)
 
         self.add_widget(Label(text='Category'))
-        self.category = TextInput(multiline=False)
-        self.add_widget(self.category)
+        self.categoryDropdown = dropdown.DynamicDropdown(self.connection, "categories", ['N/A'], -1)
+        self.add_widget(self.categoryDropdown)
 
         self.add_widget(Label(text='Note'))
         self.note = TextInput(multiline=False)
@@ -83,11 +83,12 @@ class CreateTransaction(GridLayout):
     
     def createTransaction(self, instance):
         transactionId = random() * 100000    
-        amount = self.amount.text
+        amount = int(self.amount.text)
+        if(self.expense.active):
+            amount *= -1
         description = self.description.text
-        accountId = self.account.text
-        categoryId = self.category.text
+        accountId = self.accountDropdown.value
+        categoryId = self.categoryDropdown.value
         datetime = self.date.text + self.time.text
         note = self.note.text
-        connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
-        sql.addTransaction(connection, transactionId, amount, description, accountId, categoryId, datetime, note)
+        sql.addTransaction(self.connection, transactionId, amount, description, accountId, categoryId, datetime, note)
