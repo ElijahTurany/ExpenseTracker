@@ -62,19 +62,19 @@ def createDatabase(name):
 def buildTables(connection):
     createAccountsTable = """
     CREATE TABLE accounts (
-        accountId int(10) NOT NULL,
+        accountId int(10) NOT NULL AUTO_INCREMENT,
         title VARCHAR(20) NOT NULL,
         Primary Key (accountId),
     );
     """
     createTransferTable = """
     CREATE TABLE MoneyTransfer (
-        transNum int(10) NOT NULL,
+        transNum int(10) NOT NULL AUTO_INCREMENT,
         cusId int(10) NOT NULL,
         Acc1IdFrom int(10) NOT NULL,
         Acc2IdTo int(10) NOT NULL,
         amount int(5),
-        dateOfTran date NOT NULL,
+        dateOfTransfer DATE NOT NULL,
         Foreign Key (cusId) references customer(cusId),
         Foreign Key (Acc1IdFrom) references accounts(accountId),
         Foreign Key (Acc2IdTo) references accounts(accountId),
@@ -84,7 +84,7 @@ def buildTables(connection):
 
     createCustomerTable = """
     CREATE TABLE customer (
-        cusId int(10) NOT NULL,
+        cusId int(10) NOT NULL AUTO_INCREMENT,
         fname VARCHAR(20) NOT NULL,
         lname VARCHAR(20) NOT NULL,
         dob VARCHAR(20) NOT NULL,
@@ -99,12 +99,12 @@ def buildTables(connection):
     """
     createTransactionsTable = """
     CREATE TABLE transactions (
-        transactionNum int(10) NOT NULL,
+        transactionNum int(10) NOT NULL AUTO_INCREMENT,
         amount int(10),
         description VARCHAR(250),
         accountId int(10),
         categoryId int(10),
-        timestamp VARCHAR(30),
+        dateOfTransaction DATETIME,
         note VARCHAR(100),
         Primary Key (transactionNum),
         Foreign Key (accountId) references accounts(accountId),
@@ -113,14 +113,14 @@ def buildTables(connection):
     """
     createCategoriesTable = """
     CREATE TABLE categories (
-        categoryId int(10) NOT NULL,
+        categoryId int(10) NOT NULL AUTO_INCREMENT,
         name VARCHAR(25),
         Primary Key (categoryId)
     );
     """
     createUsersTable = """
     CREATE TABLE users (
-        userId int(10) NOT NULL,
+        userId int(10) NOT NULL AUTO_INCREMENT,
         fname VARCHAR(20) NOT NULL,
         lname VARCHAR(20) NOT NULL,
         email VARCHAR(20) NOT NULL,
@@ -137,9 +137,9 @@ def buildTables(connection):
 
     createRegisteredAccountsTable = """
     CREATE TABLE users (
-        cusId int(10) NOT NULL,
+        cusId int(10) NOT NULL AUTO_INCREMENT,
         accountId int(10) NOT NULL,
-        date VARCHAR(20),
+        dateCreation DATE,
         Primary Key (accountId, cusId),
         Foreign Key (accountId) references accounts(accountId),
         Foreign Key (cusId) references customer(cusId)
@@ -221,7 +221,10 @@ def viewTransactions(connection, timeframeStart, timeframeEnd, accountId, catego
     return read_query(connection, query) 
 def advancedViewTransactions(connection, amountLow, amountHigh, description, accountIds, categoryIds, timeframeStart, timeframeEnd, orderBy, ascDesc, note):
     #"WHERE 1=1" is added so adding filters is as simple as adding " AND condition"
-    query = "SELECT * FROM transactions WHERE 1=1"
+    query = "SELECT t.transactionNum, t.amount, t.description, a.title, c.name, t.timestamp, t.note FROM transactions t"
+    query += " JOIN accounts a  ON a.accountId = t.accountId JOIN categories c ON c.categoryId = t.categoryId"
+
+    query += " WHERE 1=1"
 
     if (amountLow is not None) and (amountHigh is not None):
         query += " AND amount BETWEEN " + str(amountLow) + " AND " + str(amountHigh)
