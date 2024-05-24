@@ -16,15 +16,18 @@ import createtransaction as ct
 import viewtransaction as vt
 import sql
 
-#createDatabase("expensetracker")
-connection = create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
-#deleteTables(connection)
-buildTables(connection)
-clearTables(connection)
-#populateTables(connection)
-#printTables(connection)
+sql.createDatabase("expensetracker")
+connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
+sql.buildTables(connection)
+#sql.populateTables(connection)
+
+# sql.deleteTables(connection)
+# sql.clearTables(connection)
+
+#sql.addUser(connection, "first", "last", "abc@email.com", 15551239876, "city", "state", 12345, "street", 0, "title")
+#sql.addAccount(connection, "Wallet", 0)
         
 class KivyApp(App):
     def build(self):
         return vt.ViewTransaction()
-KivyApp().run()  
+# KivyApp().run()   
