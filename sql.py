@@ -147,6 +147,7 @@ def buildTables(connection):
     );
     """
 
+
     execute_query(connection, createAccountsTable)
     execute_query(connection, createTransferTable)
     execute_query(connection, createCustomerTable)
