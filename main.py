@@ -147,7 +147,7 @@ def buildTables(connection):
     """
 
     createRegisteredAccountsTable = """
-    CREATE TABLE users (
+    CREATE TABLE registeredaccounts (
         cusId int(10) NOT NULL AUTO_INCREMENT,
         accountId int(10) NOT NULL,
         dateCreation DATE,
@@ -164,6 +164,7 @@ def buildTables(connection):
     execute_query(connection, createTransactionsTable)
     execute_query(connection, createCategoriesTable)
     execute_query(connection, createUsersTable)
+    execute_query(connection, createRegisteredAccountsTable)
     
 
 #Command out of sync error
@@ -172,17 +173,19 @@ def clearTables(connection):
         TRUNCATE TABLE accounts;
         TRUNCATE TABLE transactions;
         TRUNCATE TABLE categories;
-        TRUNCATE TABLE users;
+        TRUNCATE TABLE user;
         TRUNCATE TABLE customer;
         TRUNCATE TABLE moneytransfer;
     """
     execute_query(connection, clearTables)
 def deleteTables(connection):
     clearTables = """
-        DROP TABLE accounts;
+        DROP TABLE account;
         DROP TABLE transactions;
-        DROP TABLE categories;
+        DROP TABLE category;
+        DROP TABLE user;
         DROP TABLE users;
+        DROP TABLE categories;
         DROP TABLE customer;
         DROP TABLE moneytransfer;
     """
@@ -354,11 +357,11 @@ def printTables(connection):
     for transaction in transactions:
         print(transaction)
 
-#createDatabase("expensetracker")
+createDatabase("expensetracker")
 connection = create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
 #deleteTables(connection)
-#buildTables(connection)
-#clearTables(connection)
+buildTables(connection)
+clearTables(connection)
 #populateTables(connection)
 #printTables(connection)
 
