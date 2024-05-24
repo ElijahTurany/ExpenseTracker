@@ -222,7 +222,10 @@ def viewTransactions(connection, timeframeStart, timeframeEnd, accountId, catego
     return read_query(connection, query) 
 def advancedViewTransactions(connection, amountLow, amountHigh, description, accountIds, categoryIds, timeframeStart, timeframeEnd, orderBy, ascDesc, note):
     #"WHERE 1=1" is added so adding filters is as simple as adding " AND condition"
-    query = "SELECT * FROM transactions WHERE 1=1"
+    query = "SELECT t.transactionNum, t.amount, t.description, a.title, c.name, t.timestamp, t.note FROM transactions t"
+    query += " JOIN accounts a  ON a.accountId = t.accountId JOIN categories c ON c.categoryId = t.categoryId"
+
+    query += " WHERE 1=1"
 
     if (amountLow is not None) and (amountHigh is not None):
         query += " AND amount BETWEEN " + str(amountLow) + " AND " + str(amountHigh)
