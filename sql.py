@@ -148,6 +148,9 @@ def buildTables(connection):
     );
     """
 
+    #Creates category for starting balance transactions
+    populateCategories = "INSERT INTO categories(name) VALUES('Starting Balance');"
+
 
     execute_query(connection, createAccountsTable)
     execute_query(connection, createCustomerTable)
@@ -156,6 +159,8 @@ def buildTables(connection):
     execute_query(connection, createTransactionsTable)
     execute_query(connection, createUsersTable)
     execute_query(connection, createRegisteredAccountsTable)
+
+    #execute_query(connection, populateCategories)
 
 
 #Command out of sync error
@@ -182,18 +187,17 @@ def deleteTables(connection):
 
 #Typechecking in the GUI
 #Add starting balance transaction
-def addAccount(connection, title, userId):
-    query = "INSERT INTO accounts VALUES('" + title + "', " + str(userId) + ")"
+def addAccount(connection, title, startingBalance):
+    query = "INSERT INTO accounts(title) VALUES('" + title + "')"
     execute_query(connection, query) 
 def addTransaction(connection, amount, description, accountId, categoryId, timestamp, note):
-    query = "INSERT INTO transactions VALUES(" + str(amount) + ", '" + description + "', " + str(accountId) + ", " + str(categoryId) + ", " + str(timestamp) + ", '" + note +"')"
+    query = "INSERT INTO transactions(amount, description, accountId, categoryId, dateOfTransaction, note) VALUES(" + str(amount) + ", '" + description + "', " + str(accountId) + ", " + str(categoryId) + ", " + str(timestamp) + ", '" + note +"')"
     execute_query(connection, query) 
-    print(query)
 def addCategory(connection,name):
-    query = "INSERT INTO categories VALUES( '" + name + "')"
+    query = "INSERT INTO categories(name) VALUES( '" + name + "')"
     execute_query(connection, query)
 def addUser(connection, firstName, lastName, email, phone, city, state, zipcode, street, type, title):
-    query = "INSERT INTO users VALUES('" + firstName + "',  '" + lastName + "', '" + email + "', " + str(phone) + ", '" + city + "', '" + state + "', " + str(zipcode) + ", '" + street + "', " + str(type) + ", '" + title + "')"
+    query = "INSERT INTO users(fname, lname, email, phone, city, zipcode, street, type, title) VALUES('" + firstName + "',  '" + lastName + "', '" + email + "', " + str(phone) + ", '" + city + "', '" + state + "', " + str(zipcode) + ", '" + street + "', " + str(type) + ", '" + title + "')"
     execute_query(connection, query)
 
 def addTransfer():

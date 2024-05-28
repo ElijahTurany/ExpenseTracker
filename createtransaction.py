@@ -82,7 +82,6 @@ class CreateTransaction(GridLayout):
         self.add_widget(createLayout)
     
     def createTransaction(self, instance):
-        transactionId = random() * 100000    
         amount = int(self.amount.text)
         if(self.expense.active):
             amount *= -1
@@ -91,4 +90,4 @@ class CreateTransaction(GridLayout):
         categoryId = self.categoryDropdown.value
         datetime = self.date.text + self.time.text
         note = self.note.text
-        sql.addTransaction(self.connection, transactionId, amount, description, accountId, categoryId, datetime, note)
+        sql.addTransaction(self.connection, amount, description, accountId, categoryId, datetime, note)
