@@ -52,7 +52,7 @@ def read_query(connection, query):
     except Error as err:
         print(f"Error: '{err}'")
 
-
+#Create empty database
 def createDatabase(name):
     connection = create_server_connection("localhost", "root", "MyDB2024")
     query = "CREATE DATABASE " + name
@@ -64,7 +64,22 @@ def buildTables(connection):
     CREATE TABLE accounts (
         accountId int(10) NOT NULL AUTO_INCREMENT,
         title VARCHAR(20) NOT NULL,
-        Primary Key (accountId),
+        Primary Key (accountId)
+    );
+    """
+    createCustomerTable = """
+    CREATE TABLE customer (
+        cusId int(10) NOT NULL AUTO_INCREMENT,
+        fname VARCHAR(20) NOT NULL,
+        lname VARCHAR(20) NOT NULL,
+        dob VARCHAR(20) NOT NULL,
+        email VARCHAR(20) NOT NULL,
+        phone VARCHAR(20) NOT NULL,
+        city VARCHAR(20) NOT NULL,
+        state VARCHAR(20) NOT NULL,
+        zipcode VARCHAR(20) NOT NULL,
+        street VARCHAR(20) NOT NULL,
+        Primary Key (cusId) 
     );
     """
     createTransferTable = """
@@ -82,21 +97,14 @@ def buildTables(connection):
     );
     """
 
-    createCustomerTable = """
-    CREATE TABLE customer (
-        cusId int(10) NOT NULL AUTO_INCREMENT,
-        fname VARCHAR(20) NOT NULL,
-        lname VARCHAR(20) NOT NULL,
-        dob VARCHAR(20) NOT NULL,
-        email VARCHAR(20) NOT NULL,
-        phone VARCHAR(20) NOT NULL,
-        city VARCHAR(20) NOT NULL,
-        state VARCHAR(20) NOT NULL,
-        zipcode VARCHAR(20) NOT NULL,
-        street VARCHAR(20) NOT NULL,
-        Primary Key (cusId) 
+    createCategoriesTable = """
+    CREATE TABLE categories (
+        categoryId int(10) NOT NULL AUTO_INCREMENT,
+        name VARCHAR(25),
+        Primary Key (categoryId)
     );
     """
+
     createTransactionsTable = """
     CREATE TABLE transactions (
         transactionNum int(10) NOT NULL AUTO_INCREMENT,
@@ -111,13 +119,7 @@ def buildTables(connection):
         Foreign Key (categoryId) references categories(categoryId)
     );
     """
-    createCategoriesTable = """
-    CREATE TABLE categories (
-        categoryId int(10) NOT NULL AUTO_INCREMENT,
-        name VARCHAR(25),
-        Primary Key (categoryId)
-    );
-    """
+    
     createUsersTable = """
     CREATE TABLE users (
         userId int(10) NOT NULL AUTO_INCREMENT,
@@ -136,25 +138,24 @@ def buildTables(connection):
     """
 
     createRegisteredAccountsTable = """
-    CREATE TABLE users (
+    CREATE TABLE registeredusers (
         cusId int(10) NOT NULL AUTO_INCREMENT,
         accountId int(10) NOT NULL,
         dateCreation DATE,
         Primary Key (accountId, cusId),
         Foreign Key (accountId) references accounts(accountId),
         Foreign Key (cusId) references customer(cusId)
-
     );
     """
 
-
     execute_query(connection, createAccountsTable)
-    execute_query(connection, createTransferTable)
     execute_query(connection, createCustomerTable)
-    execute_query(connection, createTransactionsTable)
+    execute_query(connection, createTransferTable)
     execute_query(connection, createCategoriesTable)
+    execute_query(connection, createTransactionsTable)
     execute_query(connection, createUsersTable)
-    
+    execute_query(connection, createRegisteredAccountsTable)
+
 
 #Command out of sync error
 def clearTables(connection):
@@ -180,18 +181,18 @@ def deleteTables(connection):
 
 #Typechecking in the GUI
 #Add starting balance transaction
-def addAccount(connection, accountId, title, userId):
-    query = "INSERT INTO accounts VALUES(" + str(accountId) + ",  '" + title + "', " + str(userId) + ")"
+def addAccount(connection, title, userId):
+    query = "INSERT INTO accounts VALUES('" + title + "', " + str(userId) + ")"
     execute_query(connection, query) 
-def addTransaction(connection, transactionId, amount, description, accountId, categoryId, timestamp, note):
-    query = "INSERT INTO transactions VALUES(" + str(transactionId) + ",  " + str(amount) + ", '" + description + "', " + str(accountId) + ", " + str(categoryId) + ", " + str(timestamp) + ", '" + note +"')"
+def addTransaction(connection, amount, description, accountId, categoryId, timestamp, note):
+    query = "INSERT INTO transactions VALUES(" + str(amount) + ", '" + description + "', " + str(accountId) + ", " + str(categoryId) + ", " + str(timestamp) + ", '" + note +"')"
     execute_query(connection, query) 
     print(query)
-def addCategory(connection, categoryId, name):
-    query = "INSERT INTO categories VALUES(" + str(categoryId) + ",  '" + name + "')"
+def addCategory(connection,name):
+    query = "INSERT INTO categories VALUES( '" + name + "')"
     execute_query(connection, query)
-def addUser(connection, userId, firstName, lastName, email, phone, city, state, zipcode, street, type, title):
-    query = "INSERT INTO users VALUES(" + str(userId) + ",  '" + firstName + "',  '" + lastName + "', '" + email + "', " + str(phone) + ", '" + city + "', '" + state + "', " + str(zipcode) + ", '" + street + "', " + str(type) + ", '" + title + "')"
+def addUser(connection, firstName, lastName, email, phone, city, state, zipcode, street, type, title):
+    query = "INSERT INTO users VALUES('" + firstName + "',  '" + lastName + "', '" + email + "', " + str(phone) + ", '" + city + "', '" + state + "', " + str(zipcode) + ", '" + street + "', " + str(type) + ", '" + title + "')"
     execute_query(connection, query)
 
 def addTransfer():
@@ -309,22 +310,22 @@ def categorySummary():
     pass
 
 def populateTables(connection):
-    addUser(connection, 0, "first", "last", "abc@email.com", 15551239876, "city", "state", 12345, "street", 0, "title")
-    addAccount(connection, 0, "Wallet", 0)
-    addAccount(connection, 1, "DebitCard", 0)
-    addAccount(connection, 2, "CreditCard", 0)
-    addCategory(connection, 0, "Snacks")
-    addCategory(connection, 1, "Food")
-    addCategory(connection, 2, "Gas")
-    addCategory(connection, 3, "Restaurant")
-    addCategory(connection, 4, "Cats")
-    addCategory(connection, 5, "Home")
-    addTransaction(connection, 0, 2, "Candy bar", 0, 0, 100, "")
-    addTransaction(connection, 1, 119, "Groceries", 1, 1, 110, "Walmart")
-    addTransaction(connection, 2, 6, "Paper Towels", 1, 5, 110, "Walmart")
-    addTransaction(connection, 3, 26, "Cat Litter", 0, 4, 120, "")
-    addTransaction(connection, 4, 42, "Gas", 2, 2, 130, "Kwik Trip")
-    addTransaction(connection, 5, 24, "Acoustic Cafe", 0, 3, 140, "")
+    addUser(connection, "first", "last", "abc@email.com", 15551239876, "city", "state", 12345, "street", 0, "title")
+    addAccount(connection, "Wallet", 0)
+    addAccount(connection, "DebitCard", 0)
+    addAccount(connection, "CreditCard", 0)
+    addCategory(connection, "Snacks")
+    addCategory(connection, "Food")
+    addCategory(connection, "Gas")
+    addCategory(connection, "Restaurant")
+    addCategory(connection, "Cats")
+    addCategory(connection, "Home")
+    addTransaction(connection, 2, "Candy bar", 0, 0, 100, "")
+    addTransaction(connection, 119, "Groceries", 1, 1, 110, "Walmart")
+    addTransaction(connection, 6, "Paper Towels", 1, 5, 110, "Walmart")
+    addTransaction(connection, 26, "Cat Litter", 0, 4, 120, "")
+    addTransaction(connection, 42, "Gas", 2, 2, 130, "Kwik Trip")
+    addTransaction(connection, 24, "Acoustic Cafe", 0, 3, 140, "")
 
 def printTables(connection):
     accounts = viewAccounts(connection)
