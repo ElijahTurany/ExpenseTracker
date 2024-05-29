@@ -14,6 +14,7 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.button import Button
 import createtransaction as ct
 import viewtransaction as vt
+import createaccount as ca
 import sql
 
 sql.createDatabase("expensetracker")
@@ -29,5 +30,5 @@ sql.buildTables(connection)
         
 class KivyApp(App):
     def build(self):
-        return vt.ViewTransaction()
-# KivyApp().run()   
+        return ca.CreateAccount()
+KivyApp().run()   
