@@ -33,5 +33,5 @@ def build():
 
 class KivyApp(App):
     def build(self):
-        return ct.CreateTransaction()
+        return ca.CreateAccount()
 KivyApp().run()   
