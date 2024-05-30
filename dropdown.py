@@ -48,7 +48,7 @@ class DynamicDropdown(Button):
         #Sets dropdown value to id of selected button
         self.value = btn.id
 
-    def __init__(self, connection, table, otherVals, initVal, **kwargs):
+    def __init__(self, connection, table, otherVals, initVal, offset, **kwargs):
         super(DynamicDropdown, self).__init__(**kwargs)
         self.dropList = DropDown()
 
@@ -74,7 +74,12 @@ class DynamicDropdown(Button):
                 self.dropList.add_widget(btn)
                 buttons.append(btn)
 
+        skippedValues = 0
+
         for i in self.values:
+            if skippedValues < offset:
+                skippedValues += 1
+                break
             #Creates a button with text and id of each value
             btn = Button(text=i[1], size_hint_y=None, height=50)
             btn.id = i[0]

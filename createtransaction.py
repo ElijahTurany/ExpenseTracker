@@ -48,11 +48,11 @@ class CreateTransaction(GridLayout):
         self.add_widget(self.description)
 
         self.add_widget(Label(text='Account'))
-        self.accountDropdown = dropdown.DynamicDropdown(self.connection, "accounts", ['N/A'], -1)
+        self.accountDropdown = dropdown.DynamicDropdown(self.connection, "accounts", ['N/A'], -1, 0)
         self.add_widget(self.accountDropdown)
 
         self.add_widget(Label(text='Category'))
-        self.categoryDropdown = dropdown.DynamicDropdown(self.connection, "categories", ['N/A'], -1)
+        self.categoryDropdown = dropdown.DynamicDropdown(self.connection, "categories", ['N/A'], -1, 2)
         self.add_widget(self.categoryDropdown)
 
         self.add_widget(Label(text='Note'))
@@ -89,5 +89,8 @@ class CreateTransaction(GridLayout):
         accountId = self.accountDropdown.value
         categoryId = self.categoryDropdown.value
         datetime = self.date.text + self.time.text
-        note = self.note.text
+        if(self.note.text == ""):
+            note = None
+        else:
+            note = self.note.text
         sql.addTransaction(self.connection, amount, description, accountId, categoryId, datetime, note)

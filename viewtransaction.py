@@ -22,13 +22,13 @@ class ViewTransaction(BoxLayout):
         #Account
         accountLayout = BoxLayout(orientation='vertical')
         accountLayout.add_widget(Label(text='Account'))
-        self.accountDropdown = dropdown.DynamicDropdown(self.connection, "accounts", ['N/A'], -1)
+        self.accountDropdown = dropdown.DynamicDropdown(self.connection, "accounts", ['N/A'], -1, 0)
         accountLayout.add_widget(self.accountDropdown)
 
         #Category
         categoryLayout = BoxLayout(orientation='vertical')
         categoryLayout.add_widget(Label(text='Category'))
-        self.categoryDropdown = dropdown.DynamicDropdown(self.connection, "categories", ['N/A'], -1)
+        self.categoryDropdown = dropdown.DynamicDropdown(self.connection, "categories", ['N/A'], -1, 0)
         categoryLayout.add_widget(self.categoryDropdown)
 
         #Sort

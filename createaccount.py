@@ -37,4 +37,8 @@ class CreateAccount(BoxLayout):
         self.add_widget(createAccountLayout)
 
     def createAccount(self, instance):
-        sql.addAccount(self.connection, self.title.text, self.startingBalance.text)
+        if(self.startingBalance.text == "" or self.startingBalance.text == "0"):
+            startingBalance = None
+        else:
+            startingBalance = self.startingBalance.text
+        sql.addAccount(self.connection, self.title.text, startingBalance)
