@@ -15,6 +15,7 @@ from kivy.uix.button import Button
 import createtransaction as ct
 import viewtransaction as vt
 import createaccount as ca
+import viewbalances as vb
 import sql
 
 def build():
@@ -24,9 +25,9 @@ def build():
     sql.populateTables(connection)
 
         
-build()
+#build()
 
 class KivyApp(App):
     def build(self):
-        return ca.CreateAccount()
+        return vb.ViewBalances()
 KivyApp().run()   
