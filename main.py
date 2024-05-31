@@ -23,11 +23,6 @@ def build():
     sql.buildTables(connection)
     sql.populateTables(connection)
 
-# sql.deleteTables(connection)
-# sql.clearTables(connection)
-
-#sql.addUser(connection, "first", "last", "abc@email.com", 15551239876, "city", "state", 12345, "street", 0, "title")
-#sql.addAccount(connection, "Wallet", 0)
         
 #build()
 
