@@ -24,7 +24,7 @@ def build():
     sql.populateTables(connection)
 
         
-#build()
+build()
 
 class KivyApp(App):
     def build(self):
