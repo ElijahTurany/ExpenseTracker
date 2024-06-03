@@ -117,7 +117,7 @@ class ViewTransaction(BoxLayout):
         filterLayout.add_widget(orderLayout)
         filterLayout.add_widget(searchButton)
 
-        self.headerValues = ["transactionNum", "amount", "description", "accoundId", "categoryId", "timestamp", "note"]
+        self.headerValues = ["transactionNum", "amount", "description", "account", "category", "timestamp", "note"]
 
         # headerLayout = GridLayout(cols = 7, row_force_default=True, row_default_height=10)
         # headerValues = ["transactionNum", "amount", "description", "accoundId", "categoryId", "timestamp", "note"]
@@ -209,18 +209,18 @@ class ViewTransaction(BoxLayout):
         match(self.sortDropdown.value):
             #Make alphabetical
             case 0:
-                orderBy = "accountId"
+                orderBy = "a.title"
             case 1:
-                orderBy = "amount"
+                orderBy = "t.amount"
             #Make alphabetical
             case 2:
-                orderBy = "categoryId"
+                orderBy = "c.name"
             case 3:
-                orderBy = "description"
+                orderBy = "t.description"
             case 4:
-                orderBy = "note"
+                orderBy = "t.note"
             case 5:
-                orderBy = "timestamp"   
+                orderBy = "t.timestamp"   
 
         match(self.orderDropdown.value):
             case 0:
@@ -253,7 +253,7 @@ class ViewTransaction(BoxLayout):
 
         self.resultLayout.clear_widgets()
 
-        transactions = sql.advancedViewTransactions(self.connection, amountLow, amountHigh, description, accountIds, categoryIds, timeframeStart, timeframeEnd, orderBy, ascDesc, note)
+        transactions = sql.advancedViewTransactions(self.connection, amountLow, amountHigh, description, accountIds, categoryIds, timeframeStart, timeframeEnd, orderBy, ascDesc, note, False)
 
         for value in self.headerValues:
             self.resultLayout.add_widget(Label(text=str(value)))

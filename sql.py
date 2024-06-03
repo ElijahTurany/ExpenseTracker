@@ -5,6 +5,8 @@ import pandas as pd
 startingBalanceCategoryId = 1
 transferCategoryId = 2
 
+functionalCategories = 2
+
 #Stolen
 def create_server_connection(host_name, user_name, user_password):
     connection = None
@@ -230,64 +232,67 @@ def viewTransactions(connection, timeframeStart, timeframeEnd, accountId, catego
     #"WHERE 1=1" is added so adding filters is as simple as adding " AND condition"
     query = "SELECT * FROM transactions WHERE 1=1"
 
-    if (timeframeStart is not None) and (timeframeEnd is not None):
+    if(timeframeStart is not None) and (timeframeEnd is not None):
         query += " AND timestamp BETWEEN " + str(timeframeStart) + " AND " + str(timeframeEnd)
-    elif (timeframeStart is not None):
+    elif(timeframeStart is not None):
         query += " AND timestamp >= " + str(timeframeStart)
-    elif (timeframeEnd is not None):
+    elif(timeframeEnd is not None):
         query += " AND timestamp <= " + str(timeframeEnd)
 
-    if (accountId is not None):
+    if(accountId is not None):
         query += " AND accountId=" + str(accountId) 
         
-    if (categoryId is not None):
+    if(categoryId is not None):
         query += " AND categoryId='" + str(categoryId) + "'"
 
     return readQuery(connection, query) 
 
-def advancedViewTransactions(connection, amountLow, amountHigh, description, accountIds, categoryIds, timeframeStart, timeframeEnd, orderBy, ascDesc, note):
+def advancedViewTransactions(connection, amountLow, amountHigh, description, accountIds, categoryIds, timeframeStart, timeframeEnd, orderBy, ascDesc, note, showAllCategories):
     #"WHERE 1=1" is added so adding filters is as simple as adding " AND condition"
     query = "SELECT t.transactionNum, t.amount, t.description, a.title, c.name, t.timestamp, t.note FROM transactions t"
     query += " JOIN accounts a  ON a.accountId = t.accountId JOIN categories c ON c.categoryId = t.categoryId"
 
     query += " WHERE 1=1"
 
-    if (amountLow is not None) and (amountHigh is not None):
-        query += " AND amount BETWEEN " + str(amountLow) + " AND " + str(amountHigh)
-    elif (amountLow is not None):
-        query += " AND amount >= " + str(amountLow)
-    elif (amountHigh is not None):
-        query += " AND amount <= " + str(amountHigh)
+    if(amountLow is not None) and (amountHigh is not None):
+        query += " AND t.amount BETWEEN " + str(amountLow) + " AND " + str(amountHigh)
+    elif(amountLow is not None):
+        query += " AND t.amount >= " + str(amountLow)
+    elif(amountHigh is not None):
+        query += " AND t.amount <= " + str(amountHigh)
 
-    if (description is not None):
-        query += " AND description LIKE '" + str(description) + "'"
+    if(description is not None):
+        query += " AND t.description LIKE '" + str(description) + "'"
 
-    if (accountIds is not None):
+    if(accountIds is not None):
         query += " AND ("
         for i in accountIds:
-            query += "accountId = " + str(i) + " OR "
+            query += "t.accountId = " + str(i) + " OR "
         query += "0=1)"
 
-    if (categoryIds is not None):
+    if(categoryIds is not None):
         query += " AND ("
         for i in categoryIds:
-            query += "categoryId = " + str(i) + " OR "
+            query += "t.categoryId = " + str(i) + " OR "
         query += "0=1)"
 
-    if (timeframeStart is not None) and (timeframeEnd is not None):
-        query += " AND timestamp BETWEEN " + str(timeframeStart) + " AND " + str(timeframeEnd)
-    elif (timeframeStart is not None):
-        query += " AND timestamp >= " + str(timeframeStart)
-    elif (timeframeEnd is not None):
-        query += " AND timestamp <= " + str(timeframeEnd)
+    if(timeframeStart is not None) and (timeframeEnd is not None):
+        query += " AND t.timestamp BETWEEN " + str(timeframeStart) + " AND " + str(timeframeEnd)
+    elif(timeframeStart is not None):
+        query += " AND t.timestamp >= " + str(timeframeStart)
+    elif(timeframeEnd is not None):
+        query += " AND t.timestamp <= " + str(timeframeEnd)
 
-    if (note is not None):
-        query += " AND note LIKE '" + str(note) + "'"
+    if(note is not None):
+        query += " AND t.note LIKE '" + str(note) + "'"
 
-    if (orderBy is not None):
+    if(showAllCategories is False):
+        query += " AND t.categoryId > " + str(functionalCategories)
+
+    if(orderBy is not None):
         query += " ORDER BY " + str(orderBy)
 
-    if (ascDesc is not None):
+    if(ascDesc is not None):
         query += " " + str(ascDesc)
 
     return readQuery(connection, query)

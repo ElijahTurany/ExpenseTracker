@@ -29,5 +29,5 @@ def build():
 
 class KivyApp(App):
     def build(self):
-        return vb.ViewBalances()
+        return vt.ViewTransaction()
 KivyApp().run()   
