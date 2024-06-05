@@ -12,10 +12,12 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.checkbox import CheckBox
 from kivy.uix.dropdown import DropDown
 from kivy.uix.button import Button
+from kivy.uix.screenmanager import ScreenManager, Screen
 import createtransaction as ct
 import viewtransaction as vt
 import createaccount as ca
 import viewbalances as vb
+import viewaccount as va
 import sql
 
 def build():
@@ -29,5 +31,12 @@ def build():
 
 class KivyApp(App):
     def build(self):
-        return vt.ViewTransaction()
+        sm = ScreenManager()
+        
+        balancesScreen = Screen(name='balances')
+        balancesScreen.add_widget(vb.ViewBalances())
+        sm.add_widget(balancesScreen)
+        sm.current = 'balances'
+        return sm
+    
 KivyApp().run()   

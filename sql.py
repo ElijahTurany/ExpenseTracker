@@ -316,7 +316,7 @@ def viewBalance(connection, accountId):
 
 def viewBalances(connection):
     query = """
-        SELECT a.title, sum(t.amount) as balance
+        SELECT a.accountId, a.title, sum(t.amount) as balance
         FROM expensetracker.transactions t
         JOIN accounts a ON a.accountId = t.accountId
         GROUP BY t.accountId;
