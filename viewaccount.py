@@ -12,7 +12,7 @@ import dropdown
 import sql
 
 class ViewAccount(BoxLayout):
-    def __init__(self, accountId, **kwargs):
+    def __init__(self, screenmanager, accountId, **kwargs):
         super(ViewAccount, self).__init__(**kwargs)
         self.accountId = accountId
         self.orientation='vertical'
