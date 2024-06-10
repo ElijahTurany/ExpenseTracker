@@ -72,6 +72,7 @@ def buildTables(connection):
         Primary Key (accountId)
     );
     """
+
     createCustomerTable = """
     CREATE TABLE customer (
         cusId int NOT NULL AUTO_INCREMENT,
@@ -110,7 +111,7 @@ def buildTables(connection):
         Foreign Key (categoryId) references categories(categoryId)
     );
     """
-    
+
     createTransferTable = """
     CREATE TABLE MoneyTransfer (
         transNum int NOT NULL AUTO_INCREMENT,
@@ -201,7 +202,7 @@ def addAccount(connection, title, startingBalance):
         accountId = readQuery(connection, getIdQuery)
         addTransaction(connection, startingBalance, "Starting Balance", accountId[0][0], startingBalanceCategoryId, 0, None)
 
-
+#Adding a transaction
 def addTransaction(connection, amount, description, accountId, categoryId, timestamp, note):
     if(note is not None):
         query = "INSERT INTO transactions(amount, description, accountId, categoryId, timestamp, note) VALUES(" + str(amount) + ", '" + description + "', " + str(accountId) + ", " + str(categoryId) + ", " + str(timestamp) + ", '" + note +"')"
@@ -214,16 +215,21 @@ def addCategory(connection,name):
     query = "INSERT INTO categories(name) VALUES( '" + name + "')"
     executeQuery(connection, query)
 
+#Adding a user
 def addUser(connection, firstName, lastName, email, phone, city, state, zipcode, street, type, title):
     query = "INSERT INTO users(fname, lname, email, phone, city, zipcode, street, type, title) VALUES('" + firstName + "',  '" + lastName + "', '" + email + "', " + str(phone) + ", '" + city + "', '" + state + "', " + str(zipcode) + ", '" + street + "', " + str(type) + ", '" + title + "')"
     executeQuery(connection, query)
 
-def addTransfer():
-    pass
+def addTransfer(connection, transNum, cusId, Acc1IdFrom, Acc2IdTo, amount, timestamp):
+    query = "INSERT INTO users(transNum, cusId, Acc1IdFrom, Acc2IdTo, amount, timestamp) VALUES('" + str(transNum) + "',  '" + str(cusId) + "', '" + str(Acc1IdFrom) + "', " + str(Acc2IdTo) + ", '" + str(amount) + "', '" + str(timestamp) + "')"
+    executeQuery(connection, query)
 
-def addCustomer():
-    pass
+def addCustomer(connection, cusId, firstName, lastName, dob, email, phone, city, state, zipcode, street):
+    query = "INSERT INTO users(cusId, fname, lname, dob, email, phone, city, zipcode, street) VALUES('" + str(cusId) + "',  '" + firstName + "',  '" + lastName + "', '" + dob + "', '" + email + "', " + str(phone) + ", '" + city + "', '" + state + "', " + str(zipcode) + ", '" + street + "')"
+    executeQuery(connection, query)
 
+
+#View functions
 def viewAccounts(connection):
     query = "SELECT * FROM accounts"
     return readQuery(connection, query)
@@ -362,8 +368,10 @@ def deleteCategory(connection, categoryId_):
     query = "DELETE from categories WHERE categoryId = categoryId_"
     return readQuery(connection, query)
 
-def deleteTransfer():
-    pass
+#Update to delete a given transfer
+def deleteTransfer(connection, transNum_):
+    query = "DELETE from MoneyTransfer WHERE transNum = transNum_"
+    return readQuery(connection, query)
 
 def timeSummary():
     pass
