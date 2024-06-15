@@ -220,12 +220,16 @@ def addUser(connection, firstName, lastName, email, phone, city, state, zipcode,
     query = "INSERT INTO users(fname, lname, email, phone, city, zipcode, street, type, title) VALUES('" + firstName + "',  '" + lastName + "', '" + email + "', " + str(phone) + ", '" + city + "', '" + state + "', " + str(zipcode) + ", '" + street + "', " + str(type) + ", '" + title + "')"
     executeQuery(connection, query)
 
+#I think the addTransactions should work, if not, just input like a cull value for categoryId
 def addTransfer(connection, transNum, cusId, Acc1IdFrom, Acc2IdTo, amount, timestamp):
-    query = "INSERT INTO users(transNum, cusId, Acc1IdFrom, Acc2IdTo, amount, timestamp) VALUES('" + str(transNum) + "',  '" + str(cusId) + "', '" + str(Acc1IdFrom) + "', " + str(Acc2IdTo) + ", '" + str(amount) + "', '" + str(timestamp) + "')"
+    query = "INSERT INTO MoneyTransfer(transNum, cusId, Acc1IdFrom, Acc2IdTo, amount, timestamp) VALUES('" + str(transNum) + "',  '" + str(cusId) + "', '" + str(Acc1IdFrom) + "', " + str(Acc2IdTo) + ", '" + str(amount) + "', '" + str(timestamp) + "')"
+    removedAmt = amount * (-1)
+    addTransaction(connection, removedAmt, "transfer", Acc1IdFrom, timestamp)
+    addTransaction(connection, amount, "transfer", Acc2IdTo, timestamp)
     executeQuery(connection, query)
 
 def addCustomer(connection, cusId, firstName, lastName, dob, email, phone, city, state, zipcode, street):
-    query = "INSERT INTO users(cusId, fname, lname, dob, email, phone, city, zipcode, street) VALUES('" + str(cusId) + "',  '" + firstName + "',  '" + lastName + "', '" + dob + "', '" + email + "', " + str(phone) + ", '" + city + "', '" + state + "', " + str(zipcode) + ", '" + street + "')"
+    query = "INSERT INTO customer(cusId, fname, lname, dob, email, phone, city, zipcode, street) VALUES('" + str(cusId) + "',  '" + firstName + "',  '" + lastName + "', '" + dob + "', '" + email + "', " + str(phone) + ", '" + city + "', '" + state + "', " + str(zipcode) + ", '" + street + "')"
     executeQuery(connection, query)
 
 
@@ -307,11 +311,13 @@ def viewCategories(connection):
     query = "SELECT * FROM categories"
     return readQuery(connection, query)
 
-def viewTransfers():
-    pass
+def viewTransfers(connection):
+    query = "SELECT * FROM moneyTransfers"
+    return readQuery(connection, query)
 
-def viewCustomers():
-    pass
+def viewCustomers(connection):
+    query = "SELECT * FROM customer"
+    return readQuery(connection, query)
 
 def viewBalance(connection, accountId):
     query = """
@@ -347,7 +353,14 @@ def renameCategory(connection, categoryId_, newCategoryName):
     query = "UPDATE categories SET categoryName = newCategoryName WHERE categoryId = categoryId_"
     return readQuery(connection, query)
 
-def editTransfer():
+def editTransfer(connection, transNum_, cusId_, Acc1IdFrom_, Acc2IdTo_, amount_, timestamp_):
+    query = "UPDATE MoneyTransfer SET amount = amount_, timestamp = timestamp_ where transNum = transNum_"
+    return readQuery(connection, query)
+
+def editCustomer():
+    pass
+
+def editUser():
     pass
 
 # used mostly for testing purposes
