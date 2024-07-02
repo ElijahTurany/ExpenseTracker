@@ -357,9 +357,11 @@ def editTransfer(connection, transNum_, cusId_, Acc1IdFrom_, Acc2IdTo_, amount_,
     query = "UPDATE MoneyTransfer SET amount = amount_, timestamp = timestamp_ where transNum = transNum_"
     return readQuery(connection, query)
 
+#Add these later if needed
 def editCustomer():
     pass
 
+#Add these later if needed
 def editUser():
     pass
 
