@@ -370,22 +370,22 @@ def editUser():
 
 #Update to delete a given account
 def deleteAccount(connection, AccountId_):
-    query = "DELETE from accounts WHERE AccountId = AccountId_"
+    query = "DELETE from accounts WHERE AccountId = "+ AccountId_
     return readQuery(connection, query)
 
 #Update to delete a given transaction
 def deleteTransaction(connection, transactionNum_):
-    query = "DELETE from transactions WHERE transactionNum = transactionNum_"
+    query = "DELETE from transactions WHERE transactionNum = " + transactionNum_
     return readQuery(connection, query)
 
 #Update to delete a given category
 def deleteCategory(connection, categoryId_):
-    query = "DELETE from categories WHERE categoryId = categoryId_"
+    query = "DELETE from categories WHERE categoryId =" + categoryId_
     return readQuery(connection, query)
 
 #Update to delete a given transfer
 def deleteTransfer(connection, transNum_):
-    query = "DELETE from MoneyTransfer WHERE transNum = transNum_"
+    query = "DELETE from MoneyTransfer WHERE transNum = " + transNum_
     return readQuery(connection, query)
 
 def timeSummary():
