@@ -29,6 +29,11 @@ def build():
         
 #build()
 
+# class KivyApp(App):
+#     def build(self):
+#         return ct.CreateTransaction()
+# KivyApp().run()   
+
 class KivyApp(App):
     def build(self):
         sm = ScreenManager()
