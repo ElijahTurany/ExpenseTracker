@@ -27,8 +27,9 @@ class ViewAccount(BoxLayout):
         for value in self.headerValues:
             self.transactionLayout.add_widget(Label(text=str(value)))
 
-        for transaction in transactions:
-            for value in transaction:
-                self.transactionLayout.add_widget(Label(text=str(value)))
+        if (transactions is not None):
+            for transaction in transactions:
+                for value in transaction:
+                    self.transactionLayout.add_widget(Label(text=str(value)))
 
         self.add_widget(self.transactionLayout)
