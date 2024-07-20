@@ -18,6 +18,7 @@ import viewtransaction as vt
 import createaccount as ca
 import viewbalances as vb
 import viewaccount as va
+import createtransfer as ctf
 import sql
 
 def build():
@@ -34,10 +35,9 @@ def build():
 #         return ct.CreateTransaction()
 # KivyApp().run()   
 
-class KivyApp(App):
-    def build(self):
-        sm = ScreenManager()
-        
+# class KivyApp(App):
+#     def build(self):
+#         sm = ScreenManager()
 #         balancesScreen = Screen(name='balances')
 #         balancesScreen.add_widget(vb.ViewBalances(sm))
 #         accountScreen = Screen(name='account')
@@ -46,5 +46,9 @@ class KivyApp(App):
 #         sm.add_widget(accountScreen)
 #         sm.current = 'balances'
 #         return sm
-    
-KivyApp().run()   
+# KivyApp().run()   
+
+class KivyApp(App):
+    def build(self):
+        return vt.ViewTransaction()
+KivyApp().run()  
