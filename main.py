@@ -19,6 +19,7 @@ import createaccount as ca
 import viewbalances as vb
 import viewaccount as va
 import createtransfer as ctf
+import createcategory as cc
 import sql
 
 def build():
@@ -50,5 +51,5 @@ def build():
 
 class KivyApp(App):
     def build(self):
-        return ctf.CreateTransfer()
+        return cc.CreateCategory()
 KivyApp().run()  
