@@ -67,7 +67,28 @@ class CreateTransfer(GridLayout):
 
         self.add_widget(dateTimeLayout)
 
+        self.create = Button(text='Create', on_press=self.createTransfer)
+        self.add_widget(self.create)
 
+    def createTransfer(self, instance):
+        amount = int(self.amount.text)
+        accountTo = self.accountToDropdown.value
+        accountFrom = self.accountFromDropdown.value
+        datetime = self.date.text + self.time.text
+        #addCustomer(connection, cusId, firstName, lastName, dob, email, phone, city, state, zipcode, street):
+        sql.addTransfer(self.connection, accountTo, accountFrom, amount, datetime)
+
+            # if(self.expense.active):
+            #     amount *= -1
+            # description = self.description.text
+            # accountId = self.accountToDropdown.value
+            # categoryId = self.categoryDropdown.value
+            # datetime = self.date.text + self.time.text
+            # if(self.note.text == ""):
+            #     note = None
+            # else:
+            #     note = self.note.text
+            # sql.addTransaction(self.connection, amount, description, accountId, categoryId, datetime, note)
     
 
 

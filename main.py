@@ -50,5 +50,5 @@ def build():
 
 class KivyApp(App):
     def build(self):
-        return ctf.CreateTransfer()
+        return ct.CreateTransaction()
 KivyApp().run()  
