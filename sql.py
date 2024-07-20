@@ -221,17 +221,15 @@ def addUser(connection, firstName, lastName, email, phone, city, state, zipcode,
     executeQuery(connection, query)
 
 #I think the addTransactions should work, if not, just input like a cull value for categoryId
-#def addTransfer(connection, cusId, Acc1IdFrom, Acc2IdTo, amount, timestamp):
-def addTransfer(connection, Acc1IdFrom, Acc2IdTo, amount, timestamp):
-    query = "INSERT INTO MoneyTransfer(cusId, Acc1IdFrom, Acc2IdTo, amount, timestamp) VALUES('" + str(1) + "', '" + str(Acc1IdFrom) + "', " + str(Acc2IdTo) + ", '" + str(amount) + "', '" + str(timestamp) + "')"
+def addTransfer(connection, cusId, Acc1IdFrom, Acc2IdTo, amount, timestamp):
+    query = "INSERT INTO MoneyTransfer(cusId, Acc1IdFrom, Acc2IdTo, amount, timestamp) VALUES('" + str(cusId) + "', '" + str(Acc1IdFrom) + "', " + str(Acc2IdTo) + ", '" + str(amount) + "', '" + str(timestamp) + "')"
     removedAmt = amount * (-1)
-    addTransaction(connection, removedAmt, "transfer from " + str(Acc1IdFrom), Acc1IdFrom, 2, timestamp, None)
-    addTransaction(connection, amount, "transfer to " + str(Acc2IdTo), Acc2IdTo, 2, timestamp, None)
+    addTransaction(connection, removedAmt, "transfer", Acc1IdFrom, timestamp)
+    addTransaction(connection, amount, "transfer", Acc2IdTo, timestamp)
     executeQuery(connection, query)
 
-def addCustomer(connection, firstName, lastName, dob, email, phone, city, state, zipcode, street):
-    query = "INSERT INTO customer(fname, lname, dob, email, phone, city, state, zipcode, street) VALUES('" + firstName + "',  '" + lastName + "', '" + dob + "', '" + email + "', " + str(phone) + ", '" + city + "', '" + state + "', " + str(zipcode) + ", '" + street + "')"
-    #print(query)
+def addCustomer(connection, cusId, firstName, lastName, dob, email, phone, city, state, zipcode, street):
+    query = "INSERT INTO customer(cusId, fname, lname, dob, email, phone, city, zipcode, street) VALUES('" + str(cusId) + "',  '" + firstName + "',  '" + lastName + "', '" + dob + "', '" + email + "', " + str(phone) + ", '" + city + "', '" + state + "', " + str(zipcode) + ", '" + street + "')"
     executeQuery(connection, query)
 
 
@@ -410,7 +408,7 @@ def timeSummary():
     pass
 
 def categorySummary():
-    pass    
+    pass
 
 def populateTables(connection):
     addUser(connection, "first", "last", "abc@email.com", 15551239876, "city", "state", 12345, "street", 0, "title")
@@ -429,8 +427,6 @@ def populateTables(connection):
     addTransaction(connection, -26, "Cat Litter", 2, 7, 120, None)
     addTransaction(connection, -42, "Gas", 3, 5, 130, "Kwik Trip")
     addTransaction(connection, -24, "Acoustic Cafe", 1, 6, 140, None)
-    addCustomer(connection, "first", "last", "01/01/2000", "abc@email.com", 15551239876, "city", "state", 12345, "street")
-
 
 def printTables(connection):
     accounts = viewAccounts(connection)
