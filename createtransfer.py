@@ -16,11 +16,11 @@ from kivymd.uix.pickers import MDDatePicker
 import sql
 import dropdown
 		
-class CreateTransfer(GridLayout):
+class CreateTransfer(BoxLayout):
     def __init__(self, **kwargs):
 
         super(CreateTransfer, self).__init__(**kwargs)
-        self.cols = 1
+        self.orientation = 'vertical'
         self.connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
 
         titleLayout = GridLayout(cols=2)
