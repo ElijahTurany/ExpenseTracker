@@ -338,54 +338,70 @@ def viewBalances(connection):
 #Only update if value isn't none
 #Change to update with passed in values
 def renameAccount(connection, AccountId_, newAccountName):
-    query = "UPDATE accounts SET accountName = newAccountName WHERE AccountId = AccountId_"
+    query = ""
+    if(newAccountName is not None):
+        query = "UPDATE accounts SET accountName =" + newAccountName 
+    
+        query += "WHERE AccountId = " + str(AccountId_)
     return readQuery(connection, query)
 
 #Only update if value isn't none
 #Change to update with passed in values
 def editTransaction(connection, transactionNum_, newAmount, newDescription, accountId_, categoryId_, newTimestamp, newNote):
-    query = "UPDATE transactions SET amount = newAmount, description = newDescription, timestamp = newTimestamp, note = newNote WHERE transactionNum = transactionNum_"
+    query = "UPDATE transactions"
+    if(newAmount is not None):
+        query += "SET amount = " + str(newAmount)
+    if(newDescription is not None):
+        query += ",description = " + str(newDescription)
+    if(newTimestamp is not None):
+        query += " ,timestamp = " + str(newTimestamp)
+    if(newNote is not None):
+        query += ", note =" + str(newNote)
+    if(transactionNum_ is not None):
+        query += "WHERE transactionNum =" + str(transactionNum_)
     return readQuery(connection, query)
 
 #Only update if value isn't none
 #Change to update with passed in values
 def renameCategory(connection, categoryId_, newCategoryName):
-    query = "UPDATE categories SET categoryName = newCategoryName WHERE categoryId = categoryId_"
+    query = "UPDATE categories"
+    if(newCategoryName is not None):
+        query += "SET categoryName = " + str(newCategoryName)
+    if(categoryId_ is not None):
+        query += "WHERE categoryId = " + str(categoryId_)
     return readQuery(connection, query)
 
 def editTransfer(connection, transNum_, cusId_, Acc1IdFrom_, Acc2IdTo_, amount_, timestamp_):
-    query = "UPDATE MoneyTransfer SET amount = amount_, timestamp = timestamp_ where transNum = transNum_"
+    query = "UPDATE MoneyTransfer"
+    if(amount_ is not None):
+        query += "SET amount =" + str(amount_)
+    if(timestamp_ is not None):
+        query += ", timestamp = " + str(timestamp_)
+    if(transNum_ is not None):
+        query += "where transNum =" + str(transNum_)
     return readQuery(connection, query)
-
-#Add these later if needed
-def editCustomer():
-    pass
-
-#Add these later if needed
-def editUser():
-    pass
 
 # used mostly for testing purposes
 # different methods later to clear data from the GUI but not from actual database
 
 #Update to delete a given account
 def deleteAccount(connection, AccountId_):
-    query = "DELETE from accounts WHERE AccountId = "+ AccountId_
+    query = "DELETE from accounts WHERE AccountId = "+ str(AccountId_)
     return readQuery(connection, query)
 
 #Update to delete a given transaction
 def deleteTransaction(connection, transactionNum_):
-    query = "DELETE from transactions WHERE transactionNum = " + transactionNum_
+    query = "DELETE from transactions WHERE transactionNum = " + str(transactionNum_)
     return readQuery(connection, query)
 
 #Update to delete a given category
 def deleteCategory(connection, categoryId_):
-    query = "DELETE from categories WHERE categoryId =" + categoryId_
+    query = "DELETE from categories WHERE categoryId =" + str(categoryId_)
     return readQuery(connection, query)
 
 #Update to delete a given transfer
 def deleteTransfer(connection, transNum_):
-    query = "DELETE from MoneyTransfer WHERE transNum = " + transNum_
+    query = "DELETE from MoneyTransfer WHERE transNum = " + str(transNum_)
     return readQuery(connection, query)
 
 def timeSummary():
