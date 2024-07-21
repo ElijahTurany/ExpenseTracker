@@ -19,7 +19,7 @@ class ViewAccount(BoxLayout):
         self.orientation='vertical'
         self.connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
 
-        back = Button(text='Back', on_press=lambda *args: self.screen('balances', *args))
+        back = Button(text='Back', on_press=lambda *args: self.screen('balances', 'right'))
         self.add_widget(back)
 
         self.transactionLayout = GridLayout(cols = 7)
@@ -38,5 +38,7 @@ class ViewAccount(BoxLayout):
 
         self.add_widget(self.transactionLayout)
 
-    def screen(self, screenName, *args):
+   #Switches to screenName in a given direction
+    def screen(self, screenName, direction, *args):
+        self.screenmanager.transition.direction = direction
         self.screenmanager.current = screenName

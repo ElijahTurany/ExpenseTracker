@@ -38,11 +38,8 @@ class KivyApp(App):
         homeScreen.add_widget(h.Home(sm))
         balancesScreen = Screen(name='balances')
         balancesScreen.add_widget(vb.ViewBalances(sm))
-        accountScreen = Screen(name='account')
-        accountScreen.add_widget(va.ViewAccount(sm, 1))
         sm.add_widget(homeScreen)
         sm.add_widget(balancesScreen)
-        sm.add_widget(accountScreen)
         sm.current = 'home'
         return sm
 KivyApp().run()   

@@ -304,7 +304,6 @@ def advancedViewTransactions(connection, amountLow, amountHigh, description, acc
 
     if(ascDesc is not None):
         query += " " + str(ascDesc)
-    print(query)
     return readQuery(connection, query)
 
 def viewCategories(connection):
