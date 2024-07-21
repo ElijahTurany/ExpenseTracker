@@ -20,6 +20,7 @@ import viewbalances as vb
 import viewaccount as va
 import createtransfer as ctf
 import createcategory as cc
+import home as h
 import sql
 
 def build():
@@ -27,29 +28,26 @@ def build():
     connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
     sql.buildTables(connection)
     sql.populateTables(connection)
-
         
 #build()
-
-# class KivyApp(App):
-#     def build(self):
-#         return ct.CreateTransaction()
-# KivyApp().run()   
-
-# class KivyApp(App):
-#     def build(self):
-#         sm = ScreenManager()
-#         balancesScreen = Screen(name='balances')
-#         balancesScreen.add_widget(vb.ViewBalances(sm))
-#         accountScreen = Screen(name='account')
-#         accountScreen.add_widget(va.ViewAccount(sm, 1))
-#         sm.add_widget(balancesScreen)
-#         sm.add_widget(accountScreen)
-#         sm.current = 'balances'
-#         return sm
-# KivyApp().run()   
-
+  
 class KivyApp(App):
     def build(self):
-        return cc.CreateCategory()
-KivyApp().run()  
+        sm = ScreenManager()
+        homeScreen = Screen(name='home')
+        homeScreen.add_widget(h.Home(sm))
+        balancesScreen = Screen(name='balances')
+        balancesScreen.add_widget(vb.ViewBalances(sm))
+        accountScreen = Screen(name='account')
+        accountScreen.add_widget(va.ViewAccount(sm, 1))
+        sm.add_widget(homeScreen)
+        sm.add_widget(balancesScreen)
+        sm.add_widget(accountScreen)
+        sm.current = 'home'
+        return sm
+KivyApp().run()   
+
+# class KivyApp(App):
+#     def build(self):
+#         return vt.ViewTransaction()
+# KivyApp().run()  

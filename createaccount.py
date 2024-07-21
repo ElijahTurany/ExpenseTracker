@@ -12,8 +12,9 @@ import dropdown
 import sql
 
 class CreateAccount(BoxLayout):
-    def __init__(self, **kwargs):
+    def __init__(self, screenmanager,  **kwargs):
         super(CreateAccount, self).__init__(**kwargs)
+        self.screenmanager = screenmanager
         self.orientation='vertical'
         self.connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
 

@@ -14,9 +14,13 @@ import sql
 class ViewAccount(BoxLayout):
     def __init__(self, screenmanager, accountId, **kwargs):
         super(ViewAccount, self).__init__(**kwargs)
+        self.screenmanager = screenmanager
         self.accountId = accountId
         self.orientation='vertical'
         self.connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
+
+        back = Button(text='Back', on_press=lambda *args: self.screen('balances', *args))
+        self.add_widget(back)
 
         self.transactionLayout = GridLayout(cols = 7)
 
@@ -33,3 +37,6 @@ class ViewAccount(BoxLayout):
                     self.transactionLayout.add_widget(Label(text=str(value)))
 
         self.add_widget(self.transactionLayout)
+
+    def screen(self, screenName, *args):
+        self.screenmanager.current = screenName
