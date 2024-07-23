@@ -18,6 +18,9 @@ class CreateAccount(BoxLayout):
         self.orientation='vertical'
         self.connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
 
+        back = Button(text='Back', on_press=lambda *args: self.screen('home', 'right'))
+        self.add_widget(back)
+
         createAccountLayout = GridLayout(cols=2)
 
         #Title
@@ -43,3 +46,7 @@ class CreateAccount(BoxLayout):
         else:
             startingBalance = self.startingBalance.text
         sql.addAccount(self.connection, self.title.text, startingBalance)
+    
+    def screen(self, screenName, direction, *args):
+        self.screenmanager.transition.direction = direction
+        self.screenmanager.current = screenName

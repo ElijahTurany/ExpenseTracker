@@ -17,14 +17,15 @@ import sql
 import dropdown
 		
 class CreateTransaction(GridLayout):
-    def __init__(self, **kwargs):
+    def __init__(self, screenmanager, **kwargs):
 
         super(CreateTransaction, self).__init__(**kwargs)
+        self.screenmanager = screenmanager 
         self.cols = 2
         self.connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
 
-        self.exit = Button(text='Exit')
-        self.add_widget(self.exit)
+        self.back = Button(text='Back', on_press=lambda *args: self.screen('home', 'right'))
+        self.add_widget(self.back)
 
         self.add_widget(Label(text='Create a Transaction'))
 
@@ -94,3 +95,8 @@ class CreateTransaction(GridLayout):
         else:
             note = self.note.text
         sql.addTransaction(self.connection, amount, description, accountId, categoryId, datetime, note)
+
+    #Switches to screenName in a given direction
+    def screen(self, screenName, direction, *args):
+        self.screenmanager.transition.direction = direction
+        self.screenmanager.current = screenName

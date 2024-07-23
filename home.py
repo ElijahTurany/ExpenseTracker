@@ -18,9 +18,31 @@ class Home(BoxLayout):
         self.screenmanager = screenmanager
         self.connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
 
+        #View transaction button
+        viewTransaction = Button(text='View Transactions', on_press=lambda *args: self.screen('viewTransaction', 'left', *args))
+        self.add_widget(viewTransaction)
+
         #View balances button
         viewBalances = Button(text='View Balances', on_press=lambda *args: self.screen('balances', 'left', *args))
         self.add_widget(viewBalances)
+
+        #Create transaction button
+        createTransaction = Button(text='Create Transaction', on_press=lambda *args: self.screen('createTransaction', 'left', *args))
+        self.add_widget(createTransaction)
+
+        #Create account button
+        createAccount = Button(text='Create Account', on_press=lambda *args: self.screen('createAccount', 'left', *args))
+        self.add_widget(createAccount)
+
+        #Create transfer button
+        createTransfer = Button(text='Create Transfer', on_press=lambda *args: self.screen('createTransfer', 'left', *args))
+        self.add_widget(createTransfer)
+
+        #Create category button
+        createCategory = Button(text='Create Category', on_press=lambda *args: self.screen('createCategory', 'left', *args))
+        self.add_widget(createCategory)
+
+        
 
     #Switches to screenName in a given direction
     def screen(self, screenName, direction, *args):

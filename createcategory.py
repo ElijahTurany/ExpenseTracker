@@ -12,14 +12,17 @@ import dropdown
 import sql
 
 class CreateCategory(BoxLayout):
-    def __init__(self, **kwargs):
+    def __init__(self, screenmanager, **kwargs):
         super(CreateCategory, self).__init__(**kwargs)
+        self.screenmanager = screenmanager
         self.orientation='vertical'
         self.connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
 
+        
+
         titleLayout = GridLayout(cols=2)
-        self.exit = Button(text='Exit')
-        titleLayout.add_widget(self.exit)
+        back = Button(text='Back', on_press=lambda *args: self.screen('home', 'right'))
+        titleLayout.add_widget(back)
 
         titleLayout.add_widget(Label(text='Create a Category'))
 
@@ -40,3 +43,7 @@ class CreateCategory(BoxLayout):
 
     def createCategory(self, instance):
         sql.addCategory(self.connection, self.title.text)
+
+    def screen(self, screenName, direction, *args):
+        self.screenmanager.transition.direction = direction
+        self.screenmanager.current = screenName

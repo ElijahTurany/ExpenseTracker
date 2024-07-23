@@ -12,10 +12,14 @@ import dropdown
 import sql
 
 class ViewTransaction(BoxLayout):
-    def __init__(self, **kwargs):
+    def __init__(self, screenmanager, **kwargs):
         super(ViewTransaction, self).__init__(**kwargs)
+        self.screenmanager = screenmanager 
         self.orientation='vertical'
         self.connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
+
+        back = Button(text='Back', on_press=lambda *args: self.screen('home', 'right'))
+        self.add_widget(back)
 
         filterLayout = GridLayout(cols=3)
 
@@ -261,3 +265,8 @@ class ViewTransaction(BoxLayout):
         for transaction in transactions:
             for value in transaction:
                 self.resultLayout.add_widget(Label(text=str(value)))
+    
+    #Switches to screenName in a given direction
+    def screen(self, screenName, direction, *args):
+        self.screenmanager.transition.direction = direction
+        self.screenmanager.current = screenName

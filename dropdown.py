@@ -77,16 +77,17 @@ class DynamicDropdown(Button):
         skippedValues = 0
 
         for i in self.values:
-            if skippedValues < offset:
-                skippedValues += 1
-                break
-            #Creates a button with text and id of each value
-            btn = Button(text=i[1], size_hint_y=None, height=50)
-            btn.id = i[0]
-            #Binds button to callback function and adds button to dropdown and buttons array
-            btn.bind(on_release=lambda btn: self.callback(btn))
-            self.dropList.add_widget(btn)
-            buttons.append(btn)
+            if offset > 0:
+                print("Skipping " + i[1])
+                offset = offset - 1
+            else:
+                #Creates a button with text and id of each value
+                btn = Button(text=i[1], size_hint_y=None, height=50)
+                btn.id = i[0]
+                #Binds button to callback function and adds button to dropdown and buttons array
+                btn.bind(on_release=lambda btn: self.callback(btn))
+                self.dropList.add_widget(btn)
+                buttons.append(btn)
 
         #Binds button to open dropdown when clicked
         self.bind(on_release=self.dropList.open)
