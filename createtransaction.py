@@ -15,6 +15,7 @@ from kivymd.uix.pickers import MDTimePicker
 from kivymd.uix.pickers import MDDatePicker
 import sql
 import dropdown
+
 		
 class CreateTransaction(GridLayout):
     def __init__(self, screenmanager, **kwargs):
@@ -100,3 +101,9 @@ class CreateTransaction(GridLayout):
     def screen(self, screenName, direction, *args):
         self.screenmanager.transition.direction = direction
         self.screenmanager.current = screenName
+
+    # def update(self):
+    #     self.connection = sql.create_db_connection("localhost", "root", "MyDB2024", "expensetracker")
+    #     sql.addTransaction(self.connection, 0, "update", 1, 1, 0, None)
+    #     self.accountDropdown = dropdown.DynamicDropdown(self.connection, "accounts", ['N/A'], -1, 0)
+    #     self.categoryDropdown = dropdown.DynamicDropdown(self.connection, "categories", ['N/A'], -1, 2)

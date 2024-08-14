@@ -52,7 +52,8 @@ class KivyApp(App):
 
         #Create transaction screen
         createTransactionScreen = Screen(name='createTransaction')
-        createTransactionScreen.add_widget(ct.CreateTransaction(sm))
+        sm.createTransaction = ct.CreateTransaction(sm)
+        createTransactionScreen.add_widget(sm.createTransaction)
         sm.add_widget(createTransactionScreen)
 
         #Create account screen

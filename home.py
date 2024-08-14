@@ -8,6 +8,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.checkbox import CheckBox
 from kivy.uix.dropdown import DropDown
 from kivy.uix.button import Button
+import createtransaction as ct
 import dropdown
 import sql
 
@@ -48,3 +49,4 @@ class Home(BoxLayout):
     def screen(self, screenName, direction, *args):
         self.screenmanager.transition.direction = direction
         self.screenmanager.current = screenName
+        self.screenmanager.createTransaction = ct.CreateTransaction(self.screenmanager)
