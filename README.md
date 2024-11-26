@@ -1,43 +1,9 @@
-# ExpenseTracker
-02/06/2023
-https://www.freecodecamp.org/news/connect-python-with-sql/
+# Expense Tracker Application
+Authors:
+[Elijah Turany](https://github.com/ElijahTurany), [Tyler Smith](https://github.com/smithty8567)
 
-import mysql.connector
-from mysql.connector import Error
-import pandas as pd
+We are building an expense tracker for users to track their personal finances and monitor spending. The basis of this application is transactions with categories linked to accounts. Spending and income data can be filtered and visualized by account and catergory, among other criteria. 
 
-#Stolen
-def create_server_connection(host_name, user_name, user_password):
-    connection = None
-    try:
-        connection = mysql.connector.connect(user='root', password='MyDB2024',
-                              host='localhost', database='HPDataBase')
-       
+All expense data is stored in a local SQL database. The application itself, created using Python, queries and updates this database based on the user's actions. The GUI front-end of the application is being developed using the Kivy library. Python and Kivy allow for a very flexible GUI.
 
-        print("MySQL Database connection successful")
-    except Error as err:
-        print(f"Error: '{err}'")
-
-    return connection
-
-connection = create_server_connection("localhost", "root", "MyDB2024")
-
-#amount = input('Enter an amount: ')
-#account = input('Enter an account: ')
-#description = input('Enter an description: ')
-#category = input('Enter an category: ')
-#timestamp = input('Enter an timestamp (Optional): ')
-#notes = input('Enter any notes (Optional): ')
-
-03/20/2024
-https://kivy.org/doc/stable/gettingstarted/installation.html#install-pip
-python kivy_venv\share\kivy-examples\demo\showcase\main.py
-
-pip install mysql-connector
-
-pip install mysql-connector-python
-
-pip install pandas
-
-pip install kivymd
-
+This application is being developed for a UW-Stout Honors Project. We hope to publish this application upon completion. 
